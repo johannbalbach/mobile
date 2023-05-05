@@ -102,7 +102,6 @@ class RPN() {
                     val lastStackElem = if (numberStack.isNotEmpty()) numberStack.pop() else 0.0
 
                     numberStack.push(executeOperation('-', 0.0, lastStackElem))
-                    println("${operationsCounter}) $currentChar$lastStackElem = ${numberStack.peek()}")
                     continue
                 }
 
@@ -110,7 +109,6 @@ class RPN() {
                 val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else 0.0
 
                 numberStack.push(executeOperation(currentChar, firstOperand, secondOperand))
-                println("${operationsCounter}) $firstOperand $currentChar $secondOperand = ${numberStack.peek()}")
             }
             i++
         }
