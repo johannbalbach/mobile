@@ -1,3 +1,5 @@
+package RPN
+
 import java.util.*
 import kotlin.math.pow
 
@@ -56,7 +58,7 @@ class RPN() {
                     operator = '~'
                 }
 
-                while (stack.isNotEmpty() && ((operationPriority[stack.peek()] ?: -1) >= (operationPriority[operator] ?: -1) )) {
+                while ((stack.size > 0) && ((operationPriority[stack.peek()] ?: -1) >= (operationPriority[operator] ?: -1) )) {
                     postfixExpr += stack.pop()
                 }
                 stack.push(operator)
@@ -64,8 +66,9 @@ class RPN() {
             i++
         }
 
-        for (operator in stack) {
-            postfixExpr += operator
+        stack.reverse()
+        stack.forEach { op ->
+            postfixExpr += op
         }
 
         return postfixExpr
@@ -114,13 +117,4 @@ class RPN() {
 
         return numberStack.pop()
     }
-}
-
-fun main(args: Array<String>) {
-    val expression = "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
-    val postfixExpr = RPN(expression);
-
-    println("Ввод: " + postfixExpr.infixExpr)
-    println("Постфиксная форма: " + postfixExpr.postfixExpr)
-    println("Итого: " + postfixExpr.getResult())
 }
