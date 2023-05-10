@@ -14,7 +14,7 @@ class RPN() {
     }
 
     private val operationPriority = mapOf('(' to 0, '+' to 1, '-' to 1,
-        '*' to 2, '/' to 2, '^' to 3, '~' to 4)
+        '*' to 2, '/' to 2, '^' to 3, '~' to 4, '.' to 5)
 
     private fun getStringNumber(inputExpr: String, inputPos: Int): Pair<String, Int> {
         var number = ""
@@ -29,7 +29,6 @@ class RPN() {
             }
             currentPos++
         }
-
         return Pair(number, currentPos)
     }
 
@@ -73,14 +72,40 @@ class RPN() {
 
         return postfixExpr
     }
-
+    fun concatination(firstNumber: Double, secondNumber: Double): Double {
+        var tmp1 = firstNumber.toInt()
+        var tmp2 = secondNumber.toInt()
+        var a = tmp1.toString()
+        var b = tmp2.toString()
+        var tmp3 = '.'
+        var sb = StringBuilder()
+        sb.append(a).append(tmp3).append(b)
+        var c = sb.toString()
+        var tmp = c.toDouble()
+        return tmp
+    }
     private fun executeOperation(operator: Char, firstNumber: Double, secondNumber: Double): Double = when (operator) {
         '+' -> firstNumber + secondNumber
         '-' -> firstNumber - secondNumber
         '*' -> firstNumber * secondNumber
         '/' -> firstNumber / secondNumber
         '^' -> firstNumber.pow(secondNumber)
+        '.' -> concatination(firstNumber, secondNumber)
         else -> 0.0
+    }
+    private fun executeConditions(operator: String, firstNumber: Double, secondNumber: Double ): Boolean = when (operator) {
+        ">" -> firstNumber > secondNumber
+        "<"-> firstNumber < secondNumber
+        ">=" -> firstNumber >= secondNumber
+        "<=" -> firstNumber <= secondNumber
+        "!=" -> firstNumber != secondNumber
+        "==" -> firstNumber == secondNumber
+        else -> false
+    }
+    private fun executeORAND(operator: String, firstNumber: Boolean, secondNumber: Boolean ): Boolean = when (operator) {
+        "&&" -> firstNumber && secondNumber
+        "||" -> firstNumber || secondNumber
+        else -> false
     }
 
     fun getResult(): Double {
@@ -115,4 +140,13 @@ class RPN() {
 
         return numberStack.pop()
     }
+}
+
+fun main(args: Array<String>) {
+    val expression = "((1+2)*3)*5";
+    val postfixExpr = RPN(expression);
+
+    println("Ввод: " + postfixExpr.infixExpr)
+    println("Постфиксная форма: " + postfixExpr.postfixExpr)
+    println("Итого: " + postfixExpr.getResult())
 }
