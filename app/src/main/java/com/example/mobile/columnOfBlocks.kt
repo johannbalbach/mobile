@@ -5,26 +5,34 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import com.example.mobile.Output
-import com.example.mobile.Variable
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.mobile.ui.theme.DarkOrange
 import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.White
@@ -47,8 +55,34 @@ fun ItemList() {
 
     Scaffold(
         topBar = {},
+        bottomBar = {
+            BottomAppBar(
+                contentColor = DarkOrange,
+                containerColor = Orange
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            Icons.Default.Menu,
+                            contentDescription = null,
+                        )
+                    }
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            Icons.Rounded.Code,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingActionButton(onClick = {
+            ExtendedFloatingActionButton(onClick = {
                 val id = UUID.randomUUID()
                 var color1 = DarkOrange
                 if(blocks.size % 2 == 0)
@@ -96,4 +130,10 @@ fun ItemList() {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun ScaffoldPreview() {
+    ItemList()
 }
