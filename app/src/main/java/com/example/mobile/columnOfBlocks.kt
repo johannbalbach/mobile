@@ -17,10 +17,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -31,9 +29,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.mobile.ui.theme.DarkOrange
+import androidx.compose.ui.unit.dp
 import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.White
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -47,8 +47,10 @@ data class ComposeBlock(
     var compose: @Composable () -> Unit
 )
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
+    "SuspiciousIndentation"
+)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemList() {
     val blocks = remember { mutableStateListOf<ComposeBlock>() }
@@ -57,12 +59,13 @@ fun ItemList() {
         topBar = {},
         bottomBar = {
             BottomAppBar(
-                contentColor = DarkOrange,
-                containerColor = Orange
+                modifier = Modifier.clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)),
+                contentColor = Color(0xFF030204),
+                containerColor = Color(0xFFF6F5F6)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(1f),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { /* doSomething() */ }) {
@@ -71,6 +74,22 @@ fun ItemList() {
                             contentDescription = null,
                         )
                     }
+                    FloatingActionButton(
+                        onClick = {
+                            val id = UUID.randomUUID()
+                            if(blocks.size % 2 == 0)
+                                blocks.add(ComposeBlock(id, {Variable(id, blocks)}))
+                            else
+                                blocks.add(ComposeBlock(id, { Output(id, blocks) }))
+                            println("variableID: $id")
+                        },
+                        shape = CircleShape,
+                        containerColor = Orange,
+                        contentColor = White,
+                        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+                    ) {
+                        Icon(Icons.Filled.Add, "Localized description")
+                    }
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(
                             Icons.Rounded.Code,
@@ -78,22 +97,6 @@ fun ItemList() {
                         )
                     }
                 }
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                val id = UUID.randomUUID()
-                var color1 = DarkOrange
-                if(blocks.size % 2 == 0)
-                    blocks.add(ComposeBlock(id, {Variable(id, blocks)}))
-                else
-                    blocks.add(ComposeBlock(id, { Output(id, blocks) }))
-                println("variableID: $id")
-            },
-            contentColor = DarkOrange,
-            containerColor = Orange) {
-                Icon(Icons.Filled.Add,"")
             }
         }
     ) {
