@@ -11,6 +11,10 @@ import com.example.mobile.R
 val SFDistangGalaxy = FontFamily(
     Font(R.font.sfdistantgalaxycyrillic),
 )
+
+val Nunito = FontFamily(
+    Font(R.font.nunitoregular)
+)
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(

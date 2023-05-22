@@ -7,57 +7,55 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Code
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobile.ui.theme.Orange
-import com.example.mobile.ui.theme.White
+import com.example.mobile.ui.theme.Nunito
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -72,51 +70,126 @@ data class ComposeBlock(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
     "SuspiciousIndentation"
 )
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ItemList() {
     val blocks = remember { mutableStateListOf<ComposeBlock>() }
+    val currentState = remember { mutableStateOf("New file") }
 
     Scaffold(
-        topBar = {},
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = {
+                        PlainTooltipBox(
+                            tooltip = { Text(currentState.value) }
+                        ) {
+                            Text(
+                                text = currentState.value,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = Nunito,
+                                fontSize = 21.sp,
+                                color = Color(0xFF212529),
+                                modifier = Modifier
+                                    .padding(start = 0.dp)
+                            )
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { /* doSomething() */ },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = Color(0xFF495057))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Menu,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    actions = {
+                        FilledTonalButton(
+                            onClick = { /* doSomething() */ },
+                            modifier = Modifier
+                                .height(36.dp)
+                                .width(112.dp)
+                                .padding(end = 6.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFCED4DA),
+                                contentColor = Color(0xFF495057),
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.LibraryAdd,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = "New",
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = Nunito,
+                                modifier = Modifier.padding(start = 6.dp)
+                            )
+                        }
+                    },
+                    colors = topAppBarColors(
+                        titleContentColor = Color(0xFF818181),
+                        containerColor = Color(0xFFE9ECEF)
+                    )
+                )
+                Divider(color = Color(0xFFDEE2E6))
+            }
+        },
         bottomBar = {
             BottomAppBar(
-                contentColor = Color(0xFF818181),
-                containerColor = Color(0xFFF2F2F2)
+                modifier = Modifier.height(64.dp),
+                contentColor = Color(0xFF6C757D),
+                containerColor = Color(0xFFE9ECEF)
             ) {
                 Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FloatingActionButton(
+                        onClick = { /* doSomething() */ },
+                        modifier = Modifier
+                            .padding(start = 3.dp, end = 12.dp)
+                            .size(40.dp),
+                        containerColor = Color(0xFFF8F9FA),
+                        contentColor = Color(0xFF495057),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                    Status()
+                }
+                Row(
+                    modifier = Modifier.weight(1f),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
                         onClick = { /* doSomething() */ },
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = White,
-                            contentColor = Color(0xFF616161)
-                        )
                     ) {
                         Icon(
-                            Icons.Default.Menu,
+                            imageVector = Icons.Outlined.Settings,
                             contentDescription = null,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
-                    FileMenu()
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(1f),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    IconButton(
+                        onClick = { /* doSomething() */ },
+                    ) {
                         Icon(
-                            Icons.Outlined.Settings,
+                            imageVector = Icons.Rounded.Code,
                             contentDescription = null,
-                        )
-                    }
-                    IconButton(onClick = { /* doSomething() */ }) {
-                        Icon(
-                            Icons.Rounded.Code,
-                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                     FloatingActionButton(
@@ -130,7 +203,7 @@ fun ItemList() {
                         },
                         shape = RoundedCornerShape(16.dp),
                         containerColor = Color(0xFFBF720F),
-                        contentColor = White,
+                        contentColor = Color(0xFFF8F9FA),
                         modifier = Modifier.size(40.dp),
                         elevation = FloatingActionButtonDefaults.elevation(3.dp)
                     ) {
@@ -138,7 +211,7 @@ fun ItemList() {
                     }
                 }
             }
-            Divider(color = Color(0xFFE3E3E3))
+            Divider(color = Color(0xFFDEE2E6))
         }
     ) {
         val state = rememberReorderableLazyListState(onMove = { from, to ->
@@ -150,7 +223,7 @@ fun ItemList() {
             LazyColumn(
                 state = state.listState,
                 modifier = Modifier
-                    .background(White)
+                    .background(Color(0xFFF8F9FA))
                     .fillMaxSize()
                     .reorderable(state)
                     .detectReorderAfterLongPress(state)
@@ -176,58 +249,25 @@ fun ItemList() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FileMenu() {
-    var expanded by remember { mutableStateOf(false) }
+fun Status() {
+    val currentState = remember { mutableStateOf("Waiting For Code") }
 
-    Box() {
-        TextButton(onClick = { expanded = true }) {
-            Text(
-                text = "My Code",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 21.sp,
-                color = Color.Black
-            )
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            DropdownMenuItem(
-                text = { Text("Edit") },
-                onClick = { /* Handle edit! */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Edit,
-                        contentDescription = null
-                    )
-                })
-            DropdownMenuItem(
-                text = { Text("Settings") },
-                onClick = { /* Handle settings! */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Settings,
-                        contentDescription = null
-                    )
-                })
-            Divider()
-            DropdownMenuItem(
-                text = { Text("Send Feedback") },
-                onClick = { /* Handle send feedback! */ },
-                leadingIcon = {
-                    Icon(
-                        Icons.Outlined.Email,
-                        contentDescription = null
-                    )
-                },
-                trailingIcon = { Text("F11", textAlign = TextAlign.Center) })
-        }
+    PlainTooltipBox(
+        tooltip = { Text(currentState.value) }
+    ) {
+        Text(
+            text = currentState.value,
+            modifier = Modifier.tooltipAnchor(),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            softWrap = true,
+            fontWeight = FontWeight.Bold,
+            fontFamily = Nunito,
+            fontSize = 21.sp,
+            color = Color(0xFF212529)
+        )
     }
 }
 
