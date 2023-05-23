@@ -64,8 +64,11 @@ import java.util.UUID
 
 data class ComposeBlock(
     val id: UUID,
-    var compose: @Composable () -> Unit
+    var compose: @Composable () -> Unit,
+    val blockType: String
 )
+
+val AllBlocks = mutableStateListOf<ComposeBlock>()
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
     "SuspiciousIndentation"
@@ -73,7 +76,7 @@ data class ComposeBlock(
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ItemList() {
-    val blocks = remember { mutableStateListOf<ComposeBlock>() }
+    val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
 
     Scaffold(
@@ -195,12 +198,18 @@ fun ItemList() {
                     FloatingActionButton(
                         onClick = {
                             val id = UUID.randomUUID()
-                            if(blocks.size % 3 == 0)
-                                blocks.add(ComposeBlock(id, {Variable(id, blocks)}))
-                            else if(blocks.size % 3 == 1)
-                                blocks.add(ComposeBlock(id, { Output(id, blocks) }))
-                            else
-                                blocks.add(ComposeBlock(id, { For(id, blocks) }))
+                            if(blocks.size % 3 == 0) {
+                                val variable = VariableBlock()
+                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable"))
+                            }
+                            else if(blocks.size % 3 == 1) {
+                                val output = OutputBlock()
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output"))
+                            }
+                            else {
+                                val forBlock = ForBlock("", "", "", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
+                            }
                             println("variableID: $id")
                         },
                         shape = RoundedCornerShape(16.dp),

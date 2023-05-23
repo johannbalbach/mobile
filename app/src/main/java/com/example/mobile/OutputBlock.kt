@@ -38,69 +38,71 @@ import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.SFDistangGalaxy
 import java.util.UUID
 
-@Composable
-fun Output(index: UUID, blocks: MutableList<ComposeBlock>){
-    val outputExpression = rememberSaveable(index) { mutableStateOf("") }
-    Card(
-        modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 20.dp)
-            .width(300.dp)
-            .height(70.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Red),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-    ) {
-        Box(modifier = Modifier
-            .fillMaxSize(),
-            contentAlignment = Alignment.Center){
-            Row(modifier = Modifier
+class OutputBlock(val variableName: String = "") {
+    @Composable
+    fun Output(index: UUID, blocks: MutableList<ComposeBlock>){
+        val outputExpression = rememberSaveable(index) { mutableStateOf(this.variableName) }
+        Card(
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 20.dp)
+                .width(300.dp)
+                .height(70.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Red),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        ) {
+            Box(modifier = Modifier
+                .fillMaxSize(),
+                contentAlignment = Alignment.Center){
+                Row(modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "OUT", fontFamily = SFDistangGalaxy, modifier = Modifier
-                        .padding(horizontal = 10.dp),
-                    fontSize = 30.sp, color = DarkRed)
-                BasicTextField(
-                    value = outputExpression.value,
-                    onValueChange = {
-                        outputExpression.value = it
-                    },
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(LightRed, RoundedCornerShape(percent = 10))
-                                .width(150.dp)
-                                .height(50.dp)
-                                .wrapContentHeight()
-                        ){
-                            innerTextField()
-                        }
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = DarkRed,
-                        textAlign = TextAlign.Center
-                    ),
-                    singleLine = true
-                )
-                Button(
-                    onClick = {
-                        blocks.remove(blocks.find { it.id == index })
-                        println()
-                        blocks.forEach{
-                            print(it.id)
-                            print(' ')
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .size(30.dp),
-                    contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkRed, contentColor = Red)
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Filled.Close,"")
+                    Text(text = "OUT", fontFamily = SFDistangGalaxy, modifier = Modifier
+                        .padding(horizontal = 10.dp),
+                        fontSize = 30.sp, color = DarkRed)
+                    BasicTextField(
+                        value = outputExpression.value,
+                        onValueChange = {
+                            outputExpression.value = it
+                        },
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .background(LightRed, RoundedCornerShape(percent = 10))
+                                    .width(150.dp)
+                                    .height(50.dp)
+                                    .wrapContentHeight()
+                            ){
+                                innerTextField()
+                            }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkRed,
+                            textAlign = TextAlign.Center
+                        ),
+                        singleLine = true
+                    )
+                    Button(
+                        onClick = {
+                            blocks.remove(blocks.find { it.id == index })
+                            println()
+                            blocks.forEach{
+                                print(it.id)
+                                print(' ')
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkRed, contentColor = Red)
+                    ) {
+                        Icon(Icons.Filled.Close,"")
+                    }
                 }
             }
         }

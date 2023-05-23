@@ -50,84 +50,85 @@ import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Variable(index: UUID, blocks: MutableList<ComposeBlock>){
-    val variableName = rememberSaveable(index) { mutableStateOf("") }
-    val variableValue = rememberSaveable(index) { mutableStateOf("") }
-    Card(
-        modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 20.dp)
-            .width(250.dp)
-            .height(70.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Orange),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-    ) {
-        Box(modifier = Modifier
-            .fillMaxSize(),
-            contentAlignment = Alignment.Center){
-            Row(modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicTextField(
-                    value = variableName.value,
-                    onValueChange = {
-                        variableName.value = it
-                    },
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(LightOrange, RoundedCornerShape(percent = 10))
-                                .width(50.dp)
-                                .height(50.dp)
-                                .wrapContentHeight(),
-                        ){
-                            innerTextField()
-                        }
-                    },
-                    textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange, textAlign = TextAlign.Center),
-                    singleLine = true
-                )
-                Text(text = "=", fontSize = 30.sp, color = LightOrange)
-                BasicTextField(
-                    value = variableValue.value,
-                    onValueChange = {
-                        variableValue.value = it
-                    },
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .background(LightOrange, RoundedCornerShape(percent = 10))
-                                .width(80.dp)
-                                .height(50.dp)
-                                .wrapContentHeight(),
-                        ){
-                            innerTextField()
-                        }
-                    },
-                    textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange, textAlign = TextAlign.Center),
-                    singleLine = true
-                )
-                Button(
-                    onClick = {
-                        blocks.remove(blocks.find { it.id == index })
-                        println()
-                        blocks.forEach{
-                            print(it.id)
-                            print(' ')
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .size(30.dp),
-                    contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
+class VariableBlock(val name: String = "", val value: String = "") {
+    @Composable
+    fun Variable(index: UUID, blocks: MutableList<ComposeBlock>){
+        val variableName = rememberSaveable(index) { mutableStateOf(this.name) }
+        val variableValue = rememberSaveable(index) { mutableStateOf(this.value) }
+        Card(
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 20.dp)
+                .width(250.dp)
+                .height(70.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Orange),
+            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        ) {
+            Box(modifier = Modifier
+                .fillMaxSize(),
+                contentAlignment = Alignment.Center){
+                Row(modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Filled.Close,"")
+                    BasicTextField(
+                        value = variableName.value,
+                        onValueChange = {
+                            variableName.value = it
+                        },
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .background(LightOrange, RoundedCornerShape(percent = 10))
+                                    .width(50.dp)
+                                    .height(50.dp)
+                                    .wrapContentHeight(),
+                            ){
+                                innerTextField()
+                            }
+                        },
+                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange, textAlign = TextAlign.Center),
+                        singleLine = true
+                    )
+                    Text(text = "=", fontSize = 30.sp, color = LightOrange)
+                    BasicTextField(
+                        value = variableValue.value,
+                        onValueChange = {
+                            variableValue.value = it
+                        },
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier
+                                    .background(LightOrange, RoundedCornerShape(percent = 10))
+                                    .width(80.dp)
+                                    .height(50.dp)
+                                    .wrapContentHeight(),
+                            ){
+                                innerTextField()
+                            }
+                        },
+                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange, textAlign = TextAlign.Center),
+                        singleLine = true
+                    )
+                    Button(
+                        onClick = {
+                            blocks.remove(blocks.find { it.id == index })
+                            println()
+                            blocks.forEach{
+                                print(it.id)
+                                print(' ')
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
+                    ) {
+                        Icon(Icons.Filled.Close,"")
+                    }
                 }
             }
         }

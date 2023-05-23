@@ -9,24 +9,24 @@ fun Concatenation(s1: String, s2: String): String {
     return sb.toString()
 }
 
-fun MathExpression(string: String) {
-    var expression = RPN(string)
-    expression.Math()
-}
-
-fun Build(){
-    var i = 0
-    while (i < AllBlocks.size){
-        var CurrentBlock = AllBlocks.get(i);
-        if (CurrentBlock.blockType == "variable"){
-            val expression = Concatenation()
-            MathExpression(expression)
-        }
-        else if (CurrentBlock.blockType == "output"){
-
-        }
-        else if (CurrentBlock.blockType == "for"){
-
-        }
-    }
-}
+//fun MathExpression(string: String) {
+//    var expression = RPN(string)
+//    expression.Math()
+//}
+//
+//fun Build(){
+//    var i = 0
+//    while (i < AllBlocks.size){
+//        var CurrentBlock = AllBlocks.get(i);
+//        if (CurrentBlock.blockType == "variable"){
+//            val expression = Concatenation()
+//            MathExpression(expression)
+//        }
+//        else if (CurrentBlock.blockType == "output"){
+//
+//        }
+//        else if (CurrentBlock.blockType == "for"){
+//
+//        }
+//    }
+//}
