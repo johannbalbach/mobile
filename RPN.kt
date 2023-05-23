@@ -3,73 +3,84 @@ package RPN
 import java.util.*
 import kotlin.math.pow
 
-var table = Hashtable<String, Double>()
+class Value() {
+    var doubleValue = Double.MIN_VALUE
+    var intValue = Int.MIN_VALUE
+    var boolValue = false
+    var WasThereChanges = false
+    var variableName = ""
+    var type = 0; // 1 - Double, 2 - Int, 3 - Boolean
 
-class RPN() {
-    private class value() {
-        var doubleValue = Double.MIN_VALUE
-        var intValue = Int.MIN_VALUE
-        var boolValue = false;
-        var WasThereChanges = false;
-
-        constructor(value: Double) : this() {
-            this.doubleValue = value
-        }
-
-        constructor(value: Int) : this() {
-            this.intValue = value
-        }
-
-        constructor(value: Boolean) : this() {
-            this.boolValue = value
-            this.WasThereChanges = true
-        }
-
-        fun GetDouble(): Double {
-            if (doubleValue != Double.MIN_VALUE)
-                return doubleValue
-            else if (intValue != Int.MIN_VALUE)
-                return intValue.toDouble()
-            else if (WasThereChanges) {
-               // println("THERE'RE SOME MISTAKES IN DOUBLE")
-                return 0.0
-            } else {
-                //println("NO CHANGES")
-                return 0.0
-            }
-        }
-
-        fun GetInteger(): Int {
-            if (intValue != Int.MIN_VALUE)
-                return intValue
-            else if (doubleValue != Double.MIN_VALUE)
-                return doubleValue.toInt()
-            else if (WasThereChanges) {
-               // println("THERE'RE SOME MISTAKES IN INTEGER")
-                return 0
-            } else {
-                //println("NO CHANGES")
-                return 0
-            }
-        }
-
-        fun GetBool(): Boolean {
-            if (WasThereChanges)
-                return boolValue
-            else if (doubleValue != Double.MIN_VALUE) {
-                //println("THERE'RE SOME MISTAKES IN BOOL WITH DOUBLE")
-                return false
-            } else if (intValue != Int.MIN_VALUE) {
-                //println("THERE'RE SOME MISTAKES IN BOOL WITH INT")
-                return false
-            } else {
-                //println("NO CHANGES")
-                return false
-            }
-        }
+    constructor(value: Double, name: String = "") : this() {
+        this.doubleValue = value
+        this.variableName = name
+        this.type = 1
     }
 
+    constructor(value: Int, name: String = "") : this() {
+        this.intValue = value
+        this.variableName = name
+        this.type = 2
+    }
+
+    constructor(value: Boolean, name: String = "") : this() {
+        this.boolValue = value
+        this.WasThereChanges = true
+        this.variableName = name
+        this.type = 3
+    }
+
+    fun GetDouble(): Double {
+        if (doubleValue != Double.MIN_VALUE)
+            return doubleValue
+        else if (intValue != Int.MIN_VALUE)
+            return intValue.toDouble()
+        else if (WasThereChanges) {
+            // println("THERE'RE SOME MISTAKES IN DOUBLE")
+            return 0.0
+        } else {
+            //println("NO CHANGES")
+            return 0.0
+        }
+    }
+    fun GetInteger(): Int {
+        if (intValue != Int.MIN_VALUE)
+            return intValue
+        else if (doubleValue != Double.MIN_VALUE)
+            return doubleValue.toInt()
+        else if (WasThereChanges) {
+            // println("THERE'RE SOME MISTAKES IN INTEGER")
+            return 0
+        } else {
+            //println("NO CHANGES")
+            return 0
+        }
+    }
+    fun GetBool(): Boolean {
+        if (WasThereChanges)
+            return boolValue
+        else if (doubleValue != Double.MIN_VALUE) {
+            //println("THERE'RE SOME MISTAKES IN BOOL WITH DOUBLE")
+            return false
+        } else if (intValue != Int.MIN_VALUE) {
+            //println("THERE'RE SOME MISTAKES IN BOOL WITH INT")
+            return false
+        } else {
+            //println("NO CHANGES")
+            return false
+        }
+    }
+    fun IsThereVariable(): Boolean {
+        if (variableName != "")
+            return true
+        else
+            return false
+    }
+}
+
+class RPN() {
     private val expression = ""
+    var table = Hashtable<String, Value>()
     var infixExpr: String = expression
     var postfixExpr: String = ""
 
@@ -78,7 +89,7 @@ class RPN() {
         this.postfixExpr = convertToPostfix(infixExpr + "\r")
     }
 
-    private val operationPriority = mapOf('?' to -2, ':' to -2, '{' to -1, '}' to -1, '(' to 0, '=' to 1, "&&" to 2,
+    private val operationPriority = mapOf('@' to -3, '?' to -2, ':' to -2, '{' to -1, '}' to -1, '(' to 0, '=' to 1, "&&" to 2,
         "||" to 2, '<' to 3, '>' to 3, ">=" to 3, "<=" to 3, "!=" to 3, "==" to 3, '!' to 4, '+' to 5, '-' to 5, '*' to 6,
         '/' to 6, '^' to 7, '~' to 8, '.' to 9
     )
@@ -152,7 +163,7 @@ class RPN() {
                         }
                         stack.push(operator)
                     }
-                } else if (operator == '?' || operator == ':' || currentChar == '}' || currentChar == '{') {
+                } else if (operator == '?' || operator == ':' || operator == '}' || operator == '{' || operator == '@') {
                     postfixExpr += operator
                 } else {
                     while ((stack.size > 0) && ((operationPriority[stack.peek()] ?: -1) >= (operationPriority[operator]
@@ -217,28 +228,29 @@ class RPN() {
             else -> false
         }
 
-    private fun setVariable(name: String, value: Double) {
+    private fun setVariable(name: String, value: Value) {
         if (name != null) {
+            var type = value.type
+            var copy = Value();
+            when(type){
+                1 -> copy = Value(value.GetDouble(), name)
+                2 -> copy = Value(value.GetInteger(), name)
+                3 -> copy = Value(value.GetBool(), name)
+            }
             if (table.contains(name)) {
-                table.replace(name, value)
+                table.replace(name, copy)
             } else
-                table.put(name, value)
+                table.put(name, copy)
         }
     }
 
-    private fun printStack(stack: Stack<value>) {
-        println("okee")
-        var stackCopy = stack
-        while (stackCopy.isNotEmpty())
-            println(stackCopy.pop().doubleValue)
-    }
-
     fun Math() {
-        val numberStack = Stack<value>()
+        val numberStack = Stack<Value>()
+        val conditionStack = Stack<Boolean>()
         var operationsCounter = 0
-        var settingVariable = ""
 
         var i = 0
+        var flag = -1
         while (i < postfixExpr.length) {
             var currentChar = postfixExpr[i]
             var twoChar = StringBuilder()
@@ -248,60 +260,104 @@ class RPN() {
             if (currentChar.isDigit()) {
                 val number = getFullString(postfixExpr, i, true).first
                 i = getFullString(postfixExpr, i, true).second
-                numberStack.push(value(number.toInt()))
-            } else if (currentChar.isLetter()) {
+                numberStack.push(Value(number.toInt()))
+            }
+            else if (currentChar.isLetter()) {
                 val word = getFullString(postfixExpr, i, false).first;
                 val index = getFullString(postfixExpr, i, false).second;
+                i = index
                 if (word == "true") {
-                    numberStack.push(value(true))
+                    numberStack.push(Value(true))
                 } else if (word == "false") {
-                    numberStack.push(value(false))
+                    numberStack.push(Value(false))
                 } else {
-                    i = index
-                    if (table.containsKey(word))
-                        numberStack.push(value(table.getValue(word)))
-                    else {
-                        settingVariable = word
+                    if (table.containsKey(word)){
+                        numberStack.push(table.getValue(word))
+                    }
+                    else{
+                        setVariable(word, Value(0.0))
+                        numberStack.push(table.getValue(word))
                     }
                 }
-            } else if (operationPriority.containsKey(twoChar.toString())) {
-                val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
-                val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
+            }
+            else if (operationPriority.containsKey(twoChar.toString())) {
+                val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
+                val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
 
                 if (operationPriority.get(twoChar.toString()) == 2) {
-                    numberStack.push(value(executeConditions(twoChar.toString(), firstOperand.GetBool(), secondOperand.GetBool())))
+                    numberStack.push(Value(executeConditions(twoChar.toString(), firstOperand.GetBool(), secondOperand.GetBool())))
                 } else
-                    numberStack.push(value(executeConditions(twoChar.toString(), firstOperand.GetDouble(), secondOperand.GetDouble())))
-            } else if (operationPriority.containsKey(currentChar)) {
+                    numberStack.push(Value(executeConditions(twoChar.toString(), firstOperand.GetDouble(), secondOperand.GetDouble())))
+            }
+            else if (operationPriority.containsKey(currentChar)) {
                 operationsCounter += 1
                 if (currentChar == '~') {
-                    val lastStackElem = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
-                    numberStack.push(value(executeOperation('-', 0.0, lastStackElem.GetDouble())))
+                    val lastStackElem = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
+                    numberStack.push(Value(executeOperation('-', 0.0, lastStackElem.GetDouble())))
                 } else if (currentChar == '=') {
                     if (!(equalchecker.containsKey(postfixExpr[i - 1]))) {
-                        val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
-                        setVariable(settingVariable, firstOperand.GetDouble())
-                        numberStack.push(value(table.getValue(settingVariable)))
+                        val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
+                        val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
+
+                        if (firstOperand.IsThereVariable()) {
+                            setVariable(firstOperand.variableName, secondOperand)
+                        }
                     }
-                } else if (currentChar == '?' || currentChar == ':') {
+                } else if (currentChar == '?') {
                     if (numberStack.pop().GetBool()) {
+                        conditionStack.push(true)
                     } else {
-                        while (currentChar != '}') {
+                        conditionStack.push(false)
+                        while (postfixExpr[i+1] != '}') {
                             currentChar = postfixExpr[i]
                             i++
                         }
                     }
-                } else {
-                    val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
-                    val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else value(0.0)
+                } else if (currentChar == ':') {
+                    if (!conditionStack.pop()){
+                    }
+                    else{
+                        while (postfixExpr[i+1] != '}') {
+                            currentChar = postfixExpr[i]
+                            i++
+                        }
+                    }
+                }
+                else if (currentChar == '{' || currentChar == '}'){
+                    if (currentChar == '}' && flag != -1) {
+                        i = flag
+                    }
+                }
+                else if (currentChar == '@'){
+                    flag = i;
+                }
+                else {
+                    val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
+                    val firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
 
                     if (currentChar == '>' || currentChar == '<')
-                        numberStack.push(value(executeConditions(currentChar, firstOperand.GetDouble(), secondOperand.GetDouble())))
+                        numberStack.push(Value(executeConditions(currentChar, firstOperand.GetDouble(), secondOperand.GetDouble())))
                     else
-                        numberStack.push(value(executeOperation(currentChar, firstOperand.GetDouble(), secondOperand.GetDouble())))
+                        numberStack.push(Value(executeOperation(currentChar, firstOperand.GetDouble(), secondOperand.GetDouble())))
                 }
             }
             i++
         }
+    }
+    fun printHashtable(){
+        var values = table.values
+        var i = 0;
+        while(i < values.size)
+        {
+            print(values.elementAt(i).variableName)
+            print(": ")
+            println(values.elementAt(i).GetDouble())
+            i++
+        }
+    }
+    private fun printStack(stack: Stack<Value>) {
+        var stackCopy = stack
+        while (stackCopy.isNotEmpty())
+            println(stackCopy.pop().doubleValue)
     }
 }
