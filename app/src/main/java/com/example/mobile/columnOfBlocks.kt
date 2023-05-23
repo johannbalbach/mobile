@@ -195,10 +195,12 @@ fun ItemList() {
                     FloatingActionButton(
                         onClick = {
                             val id = UUID.randomUUID()
-                            if(blocks.size % 2 == 0)
+                            if(blocks.size % 3 == 0)
                                 blocks.add(ComposeBlock(id, {Variable(id, blocks)}))
-                            else
+                            else if(blocks.size % 3 == 1)
                                 blocks.add(ComposeBlock(id, { Output(id, blocks) }))
+                            else
+                                blocks.add(ComposeBlock(id, { For(id, blocks) }))
                             println("variableID: $id")
                         },
                         shape = RoundedCornerShape(16.dp),
