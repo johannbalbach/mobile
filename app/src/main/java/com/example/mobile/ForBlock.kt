@@ -255,7 +255,7 @@ class ForBlock(val variableName: String = "", val condition: String = "", val it
                             val variable = VariableBlock()
                             blocksFor.add(ComposeBlock(id, { variable.Variable(
                                 index = id,
-                                blocks = blocks
+                                blocks = blocksFor
                             ) }, "variable"))
                         }
                         else {
@@ -264,7 +264,7 @@ class ForBlock(val variableName: String = "", val condition: String = "", val it
                         }
                     },
                     modifier = Modifier
-                        .padding(horizontal = 10.dp)
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
                         .size(30.dp),
                     contentPadding = PaddingValues(5.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
