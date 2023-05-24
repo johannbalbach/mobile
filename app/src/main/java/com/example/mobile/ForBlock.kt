@@ -59,7 +59,7 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import java.util.UUID
 
-class ForBlock(val variableName: String = "", val condition: String = "", val iteration: String = "", val forBlocks: SnapshotStateList<ComposeBlock>) {
+class ForBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var forBlocks: SnapshotStateList<ComposeBlock>) {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
         "SuspiciousIndentation"
     )

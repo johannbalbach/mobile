@@ -50,7 +50,7 @@ import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
 import java.util.UUID
 
-class VariableBlock(val name: String = "", val value: String = "") {
+class VariableBlock(var name: String = "", var value: String = "") {
     @Composable
     fun Variable(index: UUID, blocks: MutableList<ComposeBlock>){
         val variableName = rememberSaveable(index) { mutableStateOf(this.name) }
@@ -132,6 +132,8 @@ class VariableBlock(val name: String = "", val value: String = "") {
                 }
             }
         }
+        name = variableName.toString()
+        value = variableValue.toString()
     }
     fun GetData(): String {
         val sb = StringBuilder()

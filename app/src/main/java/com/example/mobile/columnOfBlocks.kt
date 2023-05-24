@@ -160,7 +160,7 @@ fun ItemList() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FloatingActionButton(
-                        onClick = {Build()},
+                        onClick = { BuildProject() },
                         modifier = Modifier
                             .padding(start = 3.dp, end = 12.dp)
                             .size(40.dp),

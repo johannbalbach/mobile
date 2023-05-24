@@ -38,7 +38,7 @@ import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.SFDistangGalaxy
 import java.util.UUID
 
-class OutputBlock(val variableName: String = "") {
+class OutputBlock(var variableName: String = "") {
     @Composable
     fun Output(index: UUID, blocks: MutableList<ComposeBlock>){
         val outputExpression = rememberSaveable(index) { mutableStateOf(this.variableName) }
@@ -106,6 +106,7 @@ class OutputBlock(val variableName: String = "") {
                 }
             }
         }
+        variableName = outputExpression.toString()
     }
 
     fun GetData(): String{
