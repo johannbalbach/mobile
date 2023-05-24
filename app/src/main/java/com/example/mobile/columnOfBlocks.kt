@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,8 +26,10 @@ import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,11 +39,13 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -58,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ui.theme.DarkOrange
 import com.example.mobile.ui.theme.Nunito
+import com.example.mobile.ui.theme.Orange
+import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.White
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -79,7 +86,9 @@ val AllBlocks = mutableStateListOf<ComposeBlock>()
 )
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ItemList() {
+fun ListOfBlocks(
+    onToggleTheme: () -> Unit
+) {
     val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
 
@@ -96,7 +105,7 @@ fun ItemList() {
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Nunito,
                                 fontSize = 21.sp,
-                                color = Color(0xFF212529),
+                                //color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier
                                     .padding(start = 0.dp)
                             )
@@ -105,8 +114,8 @@ fun ItemList() {
                     navigationIcon = {
                         IconButton(
                             onClick = { /* doSomething() */ },
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = Color(0xFF495057))
+                            //colors = IconButtonDefaults.iconButtonColors(
+                            //    contentColor = MaterialTheme.colorScheme.onSurface)
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Menu,
@@ -122,8 +131,8 @@ fun ItemList() {
                                 .width(112.dp)
                                 .padding(end = 6.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFCED4DA),
-                                contentColor = Color(0xFF495057),
+                                containerColor = MaterialTheme.colorScheme.secondary,
+                                contentColor = MaterialTheme.colorScheme.onSecondary
                             ),
                             shape = RoundedCornerShape(12.dp),
                         ) {
@@ -141,18 +150,18 @@ fun ItemList() {
                         }
                     },
                     colors = topAppBarColors(
-                        titleContentColor = Color(0xFF818181),
-                        containerColor = Color(0xFFE9ECEF)
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 )
-                Divider(color = Color(0xFFDEE2E6))
+                //Divider(color = Color(0xFFDEE2E6))
             }
         },
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.height(64.dp),
-                contentColor = Color(0xFF6C757D),
-                containerColor = Color(0xFFE9ECEF)
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = MaterialTheme.colorScheme.surface
             ) {
                 Row(
                     modifier = Modifier.weight(1f),
@@ -162,12 +171,12 @@ fun ItemList() {
                     FloatingActionButton(
                         onClick = { BuildProject() },
                         modifier = Modifier
-                            .padding(start = 3.dp, end = 12.dp)
+                            .padding(start = 8.dp, end = 12.dp)
                             .size(40.dp),
-                        containerColor = DarkOrange,
-                        contentColor = White,
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
                         shape = RoundedCornerShape(16.dp),
-                        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+                        elevation = FloatingActionButtonDefaults.elevation(3.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.PlayArrow,
@@ -191,10 +200,10 @@ fun ItemList() {
                         )
                     }
                     IconButton(
-                        onClick = { /* doSomething() */ },
+                        onClick = onToggleTheme,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Code,
+                            imageVector = Icons.Rounded.Palette,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
@@ -217,8 +226,8 @@ fun ItemList() {
                             println("variableID: $id")
                         },
                         shape = RoundedCornerShape(16.dp),
-                        containerColor = DarkOrange,
-                        contentColor = White,
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
                         modifier = Modifier.size(40.dp),
                         elevation = FloatingActionButtonDefaults.elevation(3.dp)
                     ) {
@@ -226,41 +235,50 @@ fun ItemList() {
                     }
                 }
             }
-            Divider(color = Color(0xFFDEE2E6))
+            //Divider(color = White)
         }
     ) {
-        val state = rememberReorderableLazyListState(onMove = { from, to ->
-            blocks.add(to.index, blocks.removeAt(from.index))
-        })
-        CompositionLocalProvider(
-            LocalOverscrollConfiguration provides null
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 70.dp, bottom = 70.dp)
         ) {
-            LazyColumn(
-                state = state.listState,
-                modifier = Modifier
-                    .background(Color(0xFFF8F9FA))
-                    .fillMaxSize()
-                    .reorderable(state)
-                    .detectReorderAfterLongPress(state)
+            val state = rememberReorderableLazyListState(onMove = { from, to ->
+                blocks.add(to.index, blocks.removeAt(from.index))
+            })
+            CompositionLocalProvider(
+                LocalOverscrollConfiguration provides null
             ) {
-                items(items = blocks, key = { it.id }) { block ->
-                    ReorderableItem(state, key = block.id) { isDragging ->
-                        //val elevation = animateDpAsState(if (isDragging) 1.dp else 0.dp)
-                        //val colorDrag = animateColorAsState(if (isDragging) LightGray else White)
-                        val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                //.background(colorDrag.value)
-                                .scale(scale = animateScale)
+                LazyColumn(
+                    state = state.listState,
+                    modifier = Modifier
+                        //.background(Red)
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                        .reorderable(state)
+                        .detectReorderAfterLongPress(state)
+                ) {
+                    items(items = blocks, key = { it.id }) { block ->
+                        ReorderableItem(state, key = block.id) { isDragging ->
+                            //val elevation = animateDpAsState(if (isDragging) 1.dp else 0.dp)
+                            //val colorDrag = animateColorAsState(if (isDragging) LightGray else White)
+                            val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    //.background(colorDrag.value)
+                                    .scale(scale = animateScale)
                                 //.shadow(elevation.value)
-                        ) {
-                            block.compose()
+                            ) {
+                                block.compose()
+                            }
                         }
                     }
+                    item{ Spacer(modifier = Modifier.padding(50.dp)) }
                 }
             }
         }
+        ConsoleBottomSheet()
     }
 }
 
@@ -281,7 +299,7 @@ fun Status() {
             fontWeight = FontWeight.Bold,
             fontFamily = Nunito,
             fontSize = 21.sp,
-            color = Color(0xFF212529)
+            //color = Color(0xFF212529)
         )
     }
 }
@@ -289,5 +307,5 @@ fun Status() {
 @Preview
 @Composable
 fun ScaffoldPreview() {
-    ItemList()
+    ListOfBlocks(onToggleTheme = { true })
 }

@@ -3,6 +3,7 @@ package com.example.mobile.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -14,6 +15,28 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
+
+private val LightThemeColors = lightColorScheme(
+    secondary = Orange
+)
+
+private val DarkThemeColors = darkColorScheme(
+    secondary = Cyan
+)
+
+@Composable
+fun AppTheme(
+    darkTheme: Boolean,
+    content: @Composable () -> Unit,
+) {
+    MaterialTheme(
+        colorScheme = if (darkTheme) DarkThemeColors else LightThemeColors,
+    ){
+        content()
+    }
+}
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -37,6 +60,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+/*
 @Composable
 fun MobileTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -67,4 +91,4 @@ fun MobileTheme(
         typography = Typography,
         content = content
     )
-}
+}*/

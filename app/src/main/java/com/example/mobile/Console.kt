@@ -3,6 +3,7 @@ package com.example.mobile
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,8 +31,11 @@ fun ConsoleBottomSheet() {
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetPeekHeight = 128.dp,
+        sheetPeekHeight = 100.dp,
         sheetContent = {
+            //DatesFilterSheet(
+            //    modifier = Modifier.fillMaxHeight(0.9f)
+            //)
             Box(
                 Modifier
                     .fillMaxWidth()
@@ -47,7 +51,6 @@ fun ConsoleBottomSheet() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Sheet content")
-                Spacer(Modifier.height(20.dp))
                 Button(
                     onClick = {
                         scope.launch { scaffoldState.bottomSheetState.partialExpand() }

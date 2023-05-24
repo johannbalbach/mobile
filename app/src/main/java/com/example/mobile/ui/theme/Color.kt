@@ -11,13 +11,29 @@ val Red = Color(0xFFE24040)
 val DarkRed = Color(0xFFC12F2F)
 
 val Green = Color(0xFF62B64E)
+val Cyan = Color(0xFF53DBD1)
 
 val LightBlue = Color(0xFF6F9FD5)
 val Blue = Color(0xFF4671B6)
 val DarkBlue = Color(0xFF294D90)
 
+
+
 val White = Color(0xFFFFFFFF)
 val LightGray = Color(0xFFF4F4F4)
+
+val Black900 = Color(0xFF000000)
+val Black800 = Color(0xFF262626)
+val Black700 = Color(0xFF434343)
+val Black600 = Color(0xFF555555)
+val Black500 = Color(0xFF7B7B7B)
+
+//surface Color(0xFFE9ECEF)
+//text Color(0xFF212529)
+//menu_button Color(0xFF495057)
+//new_text = Color(0xFF495057)
+//new_background = Color(0xFFCED4DA)
+
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
