@@ -76,7 +76,9 @@ class VariableBlock(var name: String = "", var value: String = "") {
                     BasicTextField(
                         value = variableName.value,
                         onValueChange = {
-                            variableName.value = it
+                            name = it
+                            variableName.value = name
+                            setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
@@ -96,7 +98,9 @@ class VariableBlock(var name: String = "", var value: String = "") {
                     BasicTextField(
                         value = variableValue.value,
                         onValueChange = {
-                            variableValue.value = it
+                            value = it
+                            variableValue.value = value
+                            setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
@@ -132,12 +136,11 @@ class VariableBlock(var name: String = "", var value: String = "") {
                 }
             }
         }
-        name = variableName.toString()
-        value = variableValue.toString()
     }
     fun GetData(): String {
         val sb = StringBuilder()
         if (name == ""){
+
         }
         else if (value == ""){
             sb.append('(').append(name).append('=').append(0).append(')')
@@ -146,5 +149,12 @@ class VariableBlock(var name: String = "", var value: String = "") {
             sb.append('(').append(name).append('=').append(value).append(')')
         }
         return sb.toString()
+    }
+
+    private fun setVariable(name: UUID, value: String) {
+        if (blocksData.contains(name)) {
+            blocksData.replace(name, value)
+        } else
+            blocksData.put(name, value)
     }
 }

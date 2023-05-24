@@ -9,23 +9,34 @@ fun MathExpression(string: String) {
 }
 
 fun BuildProject(){
+    var values = blocksData.values
+    var j = 0
+    while(j < values.size)
+    {
+        println(values.elementAt(j))
+        j++
+    }
     println("BUILDING")
     var i = 0
     while (i < AllBlocks.size){
-        var CurrentBlock = AllBlocks.get(i);
+        var CurrentBlock = AllBlocks.get(i)
         println(CurrentBlock.blockType)
         println(CurrentBlock.id)
         if (CurrentBlock.blockType == "variable"){
-            MathExpression(CurrentBlock.Data)
-            println(CurrentBlock.Data)
-            println("WORKING")
+            if(blocksData.containsKey(CurrentBlock.id)) {
+                MathExpression(blocksData.getValue(CurrentBlock.id))
+                println(blocksData.getValue(CurrentBlock.id))
+                println("WORKING")
+            }
         }
         else if (CurrentBlock.blockType == "output"){
-            println("INFO IS" + CurrentBlock.Data)
-            if (table.containsKey(CurrentBlock.Data)){
-                println("OUTPUT: "+CurrentBlock.Data + "= " + table.getValue(CurrentBlock.Data).GetDouble())
+            if(blocksData.containsKey(CurrentBlock.id)) {
+                println("INFO IS" + blocksData.getValue(CurrentBlock.id))
+                if (table.containsKey(blocksData.getValue(CurrentBlock.id))){
+                    println("OUTPUT: "+blocksData.getValue(CurrentBlock.id) + "= " + table.getValue(blocksData.getValue(CurrentBlock.id)).GetDouble())
+                }
+                println("SMTH")
             }
-            println("SMTH")
         }
         else if (CurrentBlock.blockType == "for"){
         }

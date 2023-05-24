@@ -70,16 +70,17 @@ import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import java.util.Hashtable
 import java.util.UUID
 
 data class ComposeBlock(
     val id: UUID,
     var compose: @Composable () -> Unit,
-    val blockType: String,
-    val Data: String
+    val blockType: String
 )
 
 val AllBlocks = mutableStateListOf<ComposeBlock>()
+var blocksData = Hashtable<UUID, String>()
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
     "SuspiciousIndentation"
@@ -213,15 +214,15 @@ fun ListOfBlocks(
                             val id = UUID.randomUUID()
                             if(blocks.size % 3 == 0) {
                                 val variable = VariableBlock()
-                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
+                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable"))
                             }
                             else if(blocks.size % 3 == 1) {
                                 val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", output.GetData()))
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output"))
                             }
                             else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", forBlock.GetData()))
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
                             }
                             println("variableID: $id")
                         },
