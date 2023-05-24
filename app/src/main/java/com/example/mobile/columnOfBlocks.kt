@@ -1,6 +1,7 @@
 package com.example.mobile
 
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -22,9 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -55,7 +56,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile.ui.theme.DarkOrange
 import com.example.mobile.ui.theme.Nunito
+import com.example.mobile.ui.theme.White
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -160,13 +163,13 @@ fun ItemList() {
                         modifier = Modifier
                             .padding(start = 3.dp, end = 12.dp)
                             .size(40.dp),
-                        containerColor = Color(0xFFF8F9FA),
-                        contentColor = Color(0xFF495057),
+                        containerColor = DarkOrange,
+                        contentColor = White,
                         shape = RoundedCornerShape(16.dp),
                         elevation = FloatingActionButtonDefaults.elevation(0.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
+                            imageVector = Icons.Rounded.PlayArrow,
                             contentDescription = null,
                         )
                     }
@@ -213,8 +216,8 @@ fun ItemList() {
                             println("variableID: $id")
                         },
                         shape = RoundedCornerShape(16.dp),
-                        containerColor = Color(0xFFBF720F),
-                        contentColor = Color(0xFFF8F9FA),
+                        containerColor = DarkOrange,
+                        contentColor = White,
                         modifier = Modifier.size(40.dp),
                         elevation = FloatingActionButtonDefaults.elevation(3.dp)
                     ) {
