@@ -2,7 +2,6 @@ import com.example.mobile.Value
 import com.example.mobile.table
 import java.util.*
 import kotlin.math.pow
-
 class RPN() {
     private val expression = ""
     var infixExpr: String = expression
@@ -232,19 +231,19 @@ class RPN() {
                         conditionStack.push(true)
                     } else {
                         conditionStack.push(false)
-                        while (postfixExpr[i+1] != '}') {
-                            currentChar = postfixExpr[i]
+                        while (postfixExpr[i] != '}') {
                             i++
                         }
+                        currentChar = postfixExpr[i]
                     }
                 } else if (currentChar == ':') {
                     if (!conditionStack.pop()){
                     }
                     else{
-                        while (postfixExpr[i+1] != '}') {
-                            currentChar = postfixExpr[i]
+                        while (postfixExpr[i] != '}') {
                             i++
                         }
+                        currentChar = postfixExpr[i]
                     }
                 }
                 else if (currentChar == '{' || currentChar == '}'){

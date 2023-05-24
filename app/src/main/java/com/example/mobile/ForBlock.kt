@@ -256,11 +256,11 @@ class ForBlock(val variableName: String = "", val condition: String = "", val it
                             blocksFor.add(ComposeBlock(id, { variable.Variable(
                                 index = id,
                                 blocks = blocksFor
-                            ) }, "variable"))
+                            ) }, "variable", variable.GetData()))
                         }
                         else {
                             val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksFor.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
+                            blocksFor.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", forBlock.GetData()))
                         }
                     },
                     modifier = Modifier
@@ -273,6 +273,21 @@ class ForBlock(val variableName: String = "", val condition: String = "", val it
                 }
             }
         }
+    }
+    fun ConcatenationForBlocks():String{
+        var  i = 0;
+        val sb = StringBuilder()
+        while (i<forBlocks.size){
+            var CurrentBlock = forBlocks.get(i);
+            sb.append(CurrentBlock.Data)
+        }
+        return sb.toString()
+    }
+    fun GetData():String{
+        val sb = StringBuilder()
+        val content = ConcatenationForBlocks()
+        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
+        return sb.toString()
     }
 }
 

@@ -107,4 +107,8 @@ class OutputBlock(val variableName: String = "") {
             }
         }
     }
+
+    fun GetData(): String{
+        return variableName
+    }
 }

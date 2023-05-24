@@ -133,4 +133,16 @@ class VariableBlock(val name: String = "", val value: String = "") {
             }
         }
     }
+    fun GetData(): String {
+        val sb = StringBuilder()
+        if (name == ""){
+        }
+        else if (value == ""){
+            sb.append('(').append(name).append('=').append(0).append(')')
+        }
+        else{
+            sb.append('(').append(name).append('=').append(value).append(')')
+        }
+        return sb.toString()
+    }
 }

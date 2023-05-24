@@ -68,7 +68,8 @@ import java.util.UUID
 data class ComposeBlock(
     val id: UUID,
     var compose: @Composable () -> Unit,
-    val blockType: String
+    val blockType: String,
+    val Data: String
 )
 
 val AllBlocks = mutableStateListOf<ComposeBlock>()
@@ -159,7 +160,7 @@ fun ItemList() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FloatingActionButton(
-                        onClick = { /* doSomething() */ },
+                        onClick = {Build()},
                         modifier = Modifier
                             .padding(start = 3.dp, end = 12.dp)
                             .size(40.dp),
@@ -203,15 +204,15 @@ fun ItemList() {
                             val id = UUID.randomUUID()
                             if(blocks.size % 3 == 0) {
                                 val variable = VariableBlock()
-                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable"))
+                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
                             }
                             else if(blocks.size % 3 == 1) {
                                 val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output"))
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", output.GetData()))
                             }
                             else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", forBlock.GetData()))
                             }
                             println("variableID: $id")
                         },
