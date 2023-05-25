@@ -109,7 +109,9 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                             BasicTextField(
                                 value = forVariable.value,
                                 onValueChange = {
-                                    forVariable.value = it
+                                    variableName = it
+                                    forVariable.value = variableName
+                                    setFor(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -137,7 +139,9 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                             BasicTextField(
                                 value = forCondition.value,
                                 onValueChange = {
-                                    forCondition.value = it
+                                    condition = it
+                                    forCondition.value = condition
+                                    setFor(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -165,7 +169,9 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                             BasicTextField(
                                 value = forIteration.value,
                                 onValueChange = {
-                                    forIteration.value = it
+                                    iteration = it
+                                    forIteration.value = iteration
+                                    setFor(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -253,10 +259,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                         val id = UUID.randomUUID()
                         if(blocksFor.size % 4 != 0) {
                             val variable = VariableBlock()
-                            blocksFor.add(ComposeBlock(id, { variable.Variable(
-                                index = id,
-                                blocks = blocksFor
-                            ) }, "variable"))
+                            blocksFor.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocksFor) }, "variable"))
                         }
                         else {
                             val forBlock = ForBlock("", "", "", mutableStateListOf())
@@ -273,25 +276,25 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 }
             }
         }
-        blocksData.put(index, GetData())
     }
-    fun ConcatenationForBlocks():String{
-        var  i = 0;
-        val sb = StringBuilder()
-        while (i<forBlocks.size){
-            var CurrentBlock = forBlocks.get(i);
-            sb.append(blocksData.getValue(CurrentBlock.id))
-        }
-        return sb.toString()
-    }
-    fun GetData():String{
+    fun GetData(): String {
         val sb = StringBuilder()
         val content = ConcatenationForBlocks()
         sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
         return sb.toString()
     }
+    fun ConcatenationForBlocks(): String{
+        var i = 0;
+        val sb = StringBuilder()
+        while (i < forBlocks.size){
+            val CurrentBlock = forBlocks.get(i);
+            sb.append(blocksData.getValue(CurrentBlock.id))
+            i++
+        }
+        return sb.toString()
+    }
 
-    private fun setVariable(name: UUID, value: String) {
+    private fun setFor(name: UUID, value: String) {
         if (blocksData.contains(name)) {
             blocksData.replace(name, value)
         } else
