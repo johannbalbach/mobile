@@ -169,11 +169,15 @@ class RPN() {
 
     fun Math() {
         val numberStack = Stack<Value>()
+        val flagStack = Stack<Int>()
         val conditionStack = Stack<Boolean>()
+        val isItLoop = Stack<Boolean>()
         var operationsCounter = 0
 
         var i = 0
+        var counter = 0
         var flag = -1
+
         while (i < postfixExpr.length) {
             var currentChar = postfixExpr[i]
             var twoChar = StringBuilder()
@@ -226,33 +230,68 @@ class RPN() {
                             setVariable(firstOperand.variableName, secondOperand)
                         }
                     }
-                } else if (currentChar == '?') {
-                    if (numberStack.pop().GetBool()) {
-                        conditionStack.push(true)
-                    } else {
-                        conditionStack.push(false)
-                        while (postfixExpr[i] != '}') {
-                            i++
+                }
+                else if (currentChar == '?') {
+                    if (isItLoop.isNotEmpty()){
+                        isItLoop.pop()
+                        if (numberStack.pop().GetBool()) {
+                            if (flagStack.isNotEmpty()) {
+                                flag = flagStack.pop()
+                            }
+                        } else {
+                            if (flagStack.isNotEmpty())
+                                flagStack.pop()
+                            if (flagStack.isNotEmpty()) {
+                                flag = flagStack.pop()
+                            }
+                            i = skipSpaces(postfixExpr, ++i)
+                            currentChar = postfixExpr[i]
                         }
-                        currentChar = postfixExpr[i]
-                    }
-                } else if (currentChar == ':') {
-                    if (!conditionStack.pop()){
                     }
                     else{
-                        while (postfixExpr[i] != '}') {
-                            i++
+                        if (numberStack.pop().GetBool()){
+                            isItLoop.push(false)
+                            conditionStack.push(true)
+                        }else{
+                            i = skipSpaces(postfixExpr, ++i)
+                            currentChar = postfixExpr[i]
+                            conditionStack.push(false)
                         }
+                    }
+                }
+                else if (currentChar == ':') {
+                    if (!conditionStack.pop()){
+                        isItLoop.push(false)
+                    }
+                    else{
+                        i = skipSpaces(postfixExpr, ++i)
                         currentChar = postfixExpr[i]
                     }
                 }
                 else if (currentChar == '{' || currentChar == '}'){
-                    if (currentChar == '}' && flag != -1) {
-                        i = flag
+                    var key = true
+                    if (currentChar == '}' && isItLoop.isNotEmpty()){
+                        isItLoop.pop()
+                        key = false
+                    }
+                    else if (currentChar == '}' && flag != -1 && key) {
+                        i = flag-1
                     }
                 }
                 else if (currentChar == '@'){
-                    flag = i;
+                    isItLoop.push(true)
+                    if (flag == -1){
+                        flagStack.push(i)
+                    }
+                    else if (flag != i){
+                        flagStack.push(flag)
+                        flagStack.push(i)
+                        flag = -1
+                    }
+                    else{
+                        flagStack.push(i)
+                        flag = -1
+                    }
                 }
                 else {
                     val secondOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
@@ -266,5 +305,14 @@ class RPN() {
             }
             i++
         }
+    }
+    fun skipSpaces(expression: String, index: Int): Int {
+        var i = index+1
+        while (postfixExpr[i] != '}') {
+            if (postfixExpr[i] == '{')
+                i = skipSpaces(expression, i) + 1
+            i++
+        }
+        return i
     }
 }
