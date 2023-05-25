@@ -1,7 +1,6 @@
 package com.example.mobile
 
 import android.annotation.SuppressLint
-import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -24,28 +23,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -55,17 +49,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobile.ui.theme.DarkOrange
 import com.example.mobile.ui.theme.Nunito
-import com.example.mobile.ui.theme.Orange
-import com.example.mobile.ui.theme.Red
-import com.example.mobile.ui.theme.White
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -81,6 +70,7 @@ data class ComposeBlock(
 
 val AllBlocks = mutableStateListOf<ComposeBlock>()
 var blocksData = Hashtable<UUID, String>()
+val console = Console(mutableListOf())
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
     "SuspiciousIndentation"
@@ -92,6 +82,7 @@ fun ListOfBlocks(
 ) {
     val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
+    val mutableConsoleValue = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -170,7 +161,10 @@ fun ListOfBlocks(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     FloatingActionButton(
-                        onClick = { BuildProject() },
+                        onClick = {
+                            BuildProject()
+                            mutableConsoleValue.value = true
+                        },
                         modifier = Modifier
                             .padding(start = 8.dp, end = 12.dp)
                             .size(40.dp),
@@ -224,7 +218,6 @@ fun ListOfBlocks(
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
                                 blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
                             }
-                            println("variableID: $id")
                         },
                         shape = RoundedCornerShape(16.dp),
                         containerColor = MaterialTheme.colorScheme.secondary,
@@ -279,7 +272,7 @@ fun ListOfBlocks(
                 }
             }
         }
-        ConsoleBottomSheet()
+        console.ConsoleBottomSheet(mutableConsoleValue)
     }
 }
 
