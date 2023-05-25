@@ -90,4 +90,8 @@ class Console (var textList: MutableList<String>) {
     fun print(message: String) {
         this.textList.add(message)
     }
+
+    fun clear() {
+        this.textList.clear()
+    }
 }
