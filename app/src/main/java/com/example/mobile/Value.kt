@@ -1,14 +1,17 @@
 package com.example.mobile
 
-class Value {
+import java.util.Vector
+
+class Value() {
     var doubleValue = Double.MIN_VALUE
     var intValue = Int.MIN_VALUE
     var boolValue = false
     var WasThereChanges = false
+    var array = Vector<Value>()
     var variableName = ""
-    var type = 0; // 1 - Double, 2 - Int, 3 - Boolean
-
-    constructor(){}
+    var type = 0; // 1 - Double, 2 - Int, 3 - Boolean, 4 - array
+    var fatherName = ""
+    var memberIndex = -1
 
     constructor(value: Double, name: String = "") : this() {
         this.doubleValue = value
@@ -27,6 +30,12 @@ class Value {
         this.WasThereChanges = true
         this.variableName = name
         this.type = 3
+    }
+
+    constructor(value: Vector<Value>, name: String = "") : this() {
+        this.array = value
+        this.variableName = name
+        this.type = 4
     }
 
     fun GetDouble(): Double {
@@ -67,6 +76,23 @@ class Value {
         } else {
             //println("NO CHANGES")
             return false
+        }
+    }
+    fun GetOutput(): String{
+        when(type){
+            1 -> return GetDouble().toString()
+            2 -> return GetInteger().toString()
+            3 -> return GetBool().toString()
+            4 -> {
+                var i = 0
+                var sb = StringBuilder()
+                while (i < array.size){
+                    sb.append(array[i].GetOutput()).append(", ")
+                    i++
+                }
+                return sb.toString()
+            }
+            else -> return "SOME MISTAKES"
         }
     }
     fun IsThereVariable(): Boolean {
