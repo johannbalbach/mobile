@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -246,27 +247,58 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                         }
                     }
                 }
-                Button(
-                    onClick = {
-                        val id = UUID.randomUUID()
-                        blocksData.put(id, "")
-                        if(forBlocks.size % 4 != 0) {
-                            val variable = VariableBlock()
-                            forBlocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = forBlocks) }, "variable",{setVariable(id, variable.GetData())}))
-                        }
-                        else {
-                            val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            forBlocks.add(ComposeBlock(id, { forBlock.For(id, forBlocks) }, "for",{setVariable(id, forBlock.GetData())}))
-                        }
-                        setVariable(index, GetData())
-                    },
-                    modifier = Modifier
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                        .size(30.dp),
-                    contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkBlue, contentColor = Blue)
-                ) {
-                    Icon(Icons.Filled.Add,"")
+                Row {
+                    Button(
+                        onClick = {
+                            val id = UUID.randomUUID()
+                            blocksData.put(id, "")
+                            if (forBlocks.size % 4 != 0) {
+                                val variable = VariableBlock()
+                                forBlocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { variable.Variable(index = id, blocks = forBlocks) },
+                                        "variable",
+                                        { setVariable(id, variable.GetData()) })
+                                )
+                            } else {
+                                val forBlock = ForBlock("", "", "", mutableStateListOf())
+                                forBlocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { forBlock.For(id, forBlocks) },
+                                        "for",
+                                        { setVariable(id, forBlock.GetData()) })
+                                )
+                            }
+                            setVariable(index, GetData())
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkBlue,
+                            contentColor = Blue
+                        )
+                    ) {
+                        Icon(Icons.Filled.Add, "")
+                    }
+                    Button(
+                        onClick = {
+                            GetData()
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkBlue,
+                            contentColor = Blue
+                        )
+                    ) {
+                        Icon(Icons.Filled.Done, "")
+                    }
                 }
             }
         }

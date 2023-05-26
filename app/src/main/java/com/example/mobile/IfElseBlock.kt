@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,6 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile.ui.theme.Blue
+import com.example.mobile.ui.theme.DarkBlue
 import com.example.mobile.ui.theme.Green
 import com.example.mobile.ui.theme.DarkGreen
 import com.example.mobile.ui.theme.LightGreen
@@ -170,7 +173,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                                 index = id,
                                 blocks = blocksInIf
                             )
-                        }, "variable", {setVariable(id, variable.GetData())}))
+                        }, "variable", { setVariable(id, variable.GetData()) }))
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -229,30 +232,47 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                         }
                     }
                 }
-                Box() {
+                Row {
+                    Box() {
+                        Button(
+                            onClick = {
+                                val id = UUID.randomUUID()
+                                blocksData.put(id, "")
+                                val variable = VariableBlock()
+                                blocksInElse.add(ComposeBlock(id, {
+                                    variable.Variable(
+                                        index = id,
+                                        blocks = blocksInElse
+                                    )
+                                }, "variable", { setVariable(id, variable.GetData()) }))
+                            },
+                            modifier = Modifier
+                                .padding(vertical = 5.dp, horizontal = 10.dp)
+                                .size(30.dp)
+                                .align(Alignment.CenterStart),
+                            contentPadding = PaddingValues(5.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkGreen,
+                                contentColor = Green
+                            )
+                        ) {
+                            Icon(Icons.Filled.Add, "")
+                        }
+                    }
                     Button(
                         onClick = {
-                            val id = UUID.randomUUID()
-                            blocksData.put(id, "")
-                            val variable = VariableBlock()
-                            blocksInElse.add(ComposeBlock(id, {
-                                variable.Variable(
-                                    index = id,
-                                    blocks = blocksInElse
-                                )
-                            }, "variable", {setVariable(id, variable.GetData())}))
+                            GetData()
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
-                            .size(30.dp)
-                            .align(Alignment.CenterStart),
+                            .size(30.dp),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = DarkGreen,
                             contentColor = Green
                         )
                     ) {
-                        Icon(Icons.Filled.Add, "")
+                        Icon(Icons.Filled.Done, "")
                     }
                 }
             }

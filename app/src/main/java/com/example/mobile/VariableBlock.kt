@@ -134,7 +134,7 @@ class VariableBlock(var name: String = "", var value: String = "") {
                             ){
                                 Box(
                                     modifier = Modifier
-                                        .padding(horizontal = 15.dp)
+                                        .padding(horizontal = 30.dp)
                                 ) {
                                     innerTextField()
                                 }
@@ -147,11 +147,6 @@ class VariableBlock(var name: String = "", var value: String = "") {
                     Button(
                         onClick = {
                             blocks.remove(blocks.find { it.id == index })
-                            println()
-                            blocks.forEach{
-                                print(it.id)
-                                print(' ')
-                            }
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)

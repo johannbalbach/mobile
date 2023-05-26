@@ -160,7 +160,7 @@ class ArrayBlock(var name: String = "", var value: String = "", var arrayBlocks:
                                 ArrayVariable(
                                     index = id
                                 )
-                            }, "variable"))
+                            }, "variable",{ com.example.mobile.setVariable(id, variable.GetData()) }))
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)

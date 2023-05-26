@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -59,9 +60,9 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
         val blocksInWhile = remember { whileBlocks }
 
         Box(modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 20.dp)
-                .background(Blue, RoundedCornerShape(10.dp))
-                .fillMaxWidth()
+            .padding(vertical = 10.dp, horizontal = 20.dp)
+            .background(Blue, RoundedCornerShape(10.dp))
+            .fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
@@ -157,32 +158,56 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                         }
                     }
                 }
-                Button(
-                    onClick = {
-                        val id = UUID.randomUUID()
-                        blocksData.put(id, "")
-                        if(blocksInWhile.size % 4 != 0) {
-                            val variable = VariableBlock()
-                            blocksInWhile.add(ComposeBlock(id, { variable.Variable(
-                                index = id,
-                                blocks = blocksInWhile
-                            ) }, "variable",{setVariable(id, variable.GetData())}))
-                        }
-                        else {
-                            val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksInWhile.add(ComposeBlock(id, { forBlock.For(id, blocksInWhile) }, "for", {setVariable(id, forBlock.GetData())}))
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                        .size(30.dp),
-                    contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = DarkBlue,
-                        contentColor = Blue
-                    )
-                ) {
-                    Icon(Icons.Filled.Add, "")
+                Row {
+                    Button(
+                        onClick = {
+                            val id = UUID.randomUUID()
+                            blocksData.put(id, "")
+                            if (blocksInWhile.size % 4 != 0) {
+                                val variable = VariableBlock()
+                                blocksInWhile.add(ComposeBlock(id, {
+                                    variable.Variable(
+                                        index = id,
+                                        blocks = blocksInWhile
+                                    )
+                                }, "variable", { setVariable(id, variable.GetData()) }))
+                            } else {
+                                val forBlock = ForBlock("", "", "", mutableStateListOf())
+                                blocksInWhile.add(
+                                    ComposeBlock(
+                                        id,
+                                        { forBlock.For(id, blocksInWhile) },
+                                        "for",
+                                        { setVariable(id, forBlock.GetData()) })
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkBlue,
+                            contentColor = Blue
+                        )
+                    ) {
+                        Icon(Icons.Filled.Add, "")
+                    }
+                    Button(
+                        onClick = {
+                            GetData()
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DarkBlue,
+                            contentColor = Blue
+                        )
+                    ) {
+                        Icon(Icons.Filled.Done, "")
+                    }
                 }
             }
         }
