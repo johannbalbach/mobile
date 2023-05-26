@@ -1,29 +1,19 @@
 package com.example.mobile
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -36,7 +26,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
@@ -61,10 +49,7 @@ import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.Blue
 import com.example.mobile.ui.theme.SFDistangGalaxy
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
 import java.util.UUID
 
 class ForBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var forBlocks: SnapshotStateList<ComposeBlock>) {
@@ -124,7 +109,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 onValueChange = {
                                     variableName = it
                                     forVariable.value = variableName
-                                    setFor(index, GetData())
+                                    setVariable(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -154,7 +139,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 onValueChange = {
                                     condition = it
                                     forCondition.value = condition
-                                    setFor(index, GetData())
+                                    setVariable(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -184,7 +169,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 onValueChange = {
                                     iteration = it
                                     forIteration.value = iteration
-                                    setFor(index, GetData())
+                                    setVariable(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -239,7 +224,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 ) {
 
                     val state = rememberReorderableLazyListState(onMove = { from, to ->
-                        blocksFor.add(to.index, blocksFor.removeAt(from.index))
+                        forBlocks.add(to.index, forBlocks.removeAt(from.index))
                     })
                     //CompositionLocalProvider(
                     //    LocalOverscrollConfiguration provides null
@@ -272,7 +257,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 }
                             }
                         }*/
-                        blocksFor.forEach(){
+                        forBlocks.forEach(){
                             it.compose()
                         }
                         //Spacer(modifier = Modifier.padding(50.dp))
@@ -281,14 +266,16 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 Button(
                     onClick = {
                         val id = UUID.randomUUID()
-                        if(blocksFor.size % 4 != 0) {
+                        blocksData.put(id, "")
+                        if(forBlocks.size % 4 != 0) {
                             val variable = VariableBlock()
-                            blocksFor.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocksFor) }, "variable"))
+                            forBlocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = forBlocks) }, "variable",{setVariable(id, variable.GetData())}))
                         }
                         else {
                             val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksFor.add(ComposeBlock(id, { forBlock.For(id, blocksFor) }, "for"))
+                            forBlocks.add(ComposeBlock(id, { forBlock.For(id, forBlocks) }, "for",{setVariable(id, forBlock.GetData())}))
                         }
+                        setVariable(index, GetData())
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -303,26 +290,25 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
     }
     fun GetData(): String {
         val sb = StringBuilder()
-        val content = ConcatenationForBlocks()
-        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
-        return sb.toString()
-    }
-    fun ConcatenationForBlocks(): String{
-        var i = 0;
-        val sb = StringBuilder()
-        while (i < forBlocks.size){
-            val CurrentBlock = forBlocks.get(i);
-            sb.append(blocksData.getValue(CurrentBlock.id))
-            i++
+        val content = BlockConcatenation(forBlocks)
+        println(content.length.toString())
+        if (variableName == ""){
+
+        }
+        else if (condition == ""){
+
+        }
+        else if(content == ""){
+
+        }
+        else if(iteration == ""){
+            sb.append('(').append(variableName).append(")@(").append(condition).append(")?{(").append(content)
+            sb.append('(').append(variableName).append('=').append(variableName).append("+1").append("))}")
+        }
+        else{
+            sb.append('(').append(variableName).append(")@(").append(condition).append(")?{(").append(content).append('(').append(iteration).append("))}")
         }
         return sb.toString()
-    }
-
-    private fun setFor(name: UUID, value: String) {
-        if (blocksData.contains(name)) {
-            blocksData.replace(name, value)
-        } else
-            blocksData.put(name, value)
     }
 }
 

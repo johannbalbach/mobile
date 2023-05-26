@@ -75,7 +75,8 @@ import java.util.UUID
 data class ComposeBlock(
     val id: UUID,
     var compose: @Composable () -> Unit,
-    val blockType: String
+    val blockType: String,
+    val onUpdate: () -> Unit
 )
 
 val AllBlocks = mutableStateListOf<ComposeBlock>()
@@ -216,23 +217,24 @@ fun ListOfBlocks(
                     FloatingActionButton(
                         onClick = {
                             val id = UUID.randomUUID()
+                            blocksData.put(id, "")
                             if(blocks.size % 4 == 0) {
                                 //val variable = VariableBlock()
                                 //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
-                                val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse"))
+                                val ifelseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifelseBlock.GetData())}))
                             }
                             else if(blocks.size % 4 == 1) {
                                 val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output"))
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
                             }
                             else if(blocks.size % 4 == 2) {
-                                val whileBlock = WhileBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while"))
+                                val whileBlock = WhileBlock("", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
                             }
                             else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for"))
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
                             }
                         },
                         shape = RoundedCornerShape(16.dp),

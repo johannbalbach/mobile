@@ -45,10 +45,10 @@ class Value() {
         else if (intValue != Int.MIN_VALUE)
             return intValue.toDouble()
         else if (isChanged) {
-            // println("THERE'RE SOME MISTAKES IN DOUBLE")
+            console.print("SOMEWHERE BOOL IS USED AS DOUBLE")
             return 0.0
         } else {
-            //println("NO CHANGES")
+            console.print("NO CHANGES")
             return 0.0
         }
     }
@@ -58,10 +58,10 @@ class Value() {
         else if (doubleValue != Double.MIN_VALUE)
             return doubleValue.toInt()
         else if (isChanged) {
-            // println("THERE'RE SOME MISTAKES IN INTEGER")
+            console.print("SOMEWHERE BOOL IS USED AS INTEGER")
             return 0
         } else {
-            //println("NO CHANGES")
+            console.print("NO CHANGES")
             return 0
         }
     }
@@ -69,13 +69,13 @@ class Value() {
         if (isChanged)
             return boolValue
         else if (doubleValue != Double.MIN_VALUE) {
-            //println("THERE'RE SOME MISTAKES IN BOOL WITH DOUBLE")
+            console.print("SOMEWHERE DOUBLE IS USED AS BOOL")
             return false
         } else if (intValue != Int.MIN_VALUE) {
-            //println("THERE'RE SOME MISTAKES IN BOOL WITH INT")
+            console.print("SOMEWHERE INTEGER IS USED AS DOUBLE")
             return false
         } else {
-            //println("NO CHANGES")
+            console.print("NO CHANGES")
             return false
         }
     }
@@ -96,7 +96,7 @@ class Value() {
                 }
                 return sb.toString()
             }
-            else -> return "SOME MISTAKES"
+            else -> return "SOME ERRORS IN THE RESULTS OUTPUT"
         }
     }
     fun isThereVariable(): Boolean {
