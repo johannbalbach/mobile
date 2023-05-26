@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -44,28 +43,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobile.ui.theme.DarkOrange
 import com.example.mobile.ui.theme.Green
-import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.DarkGreen
 import com.example.mobile.ui.theme.LightGreen
-import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.SFDistangGalaxy
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import java.util.UUID
 
-class IfElseBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var ifElseBlocks: SnapshotStateList<ComposeBlock>) {
+class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<ComposeBlock>, var elseBlocks: SnapshotStateList<ComposeBlock>) {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
         "SuspiciousIndentation"
     )
     @Composable
     fun IfElse(index: UUID, blocks: MutableList<ComposeBlock>){
-        val whileCondition = rememberSaveable(index) { mutableStateOf(this.variableName) }
-        //Разбить "ifElseBlocks" на if и else
-        //val blocksInIf = remember { ifElseBlocks }
-        //val blocksInElse = remember { ifElseBlocks }
-        val blocksInIf = remember { SnapshotStateList<ComposeBlock>() }
-        val blocksInElse = remember { SnapshotStateList<ComposeBlock>() }
+        val whileCondition = rememberSaveable(index) { mutableStateOf(this.condition) }
+        val blocksInIf = remember { ifBlocks }
+        val blocksInElse = remember { elseBlocks }
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
@@ -104,6 +97,8 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                                 value = whileCondition.value,
                                 onValueChange = {
                                     whileCondition.value = it
+                                    condition = whileCondition.value
+                                    setVariable(index, GetData())
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -169,12 +164,13 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                     onClick = {
                         val id = UUID.randomUUID()
                         val variable = VariableBlock()
+                        ifBlocks = blocksInIf
                         blocksInIf.add(ComposeBlock(id, {
                             variable.Variable(
                                 index = id,
                                 blocks = blocksInIf
                             )
-                        }, "variable"))
+                        }, "variable", {setVariable(id, variable.GetData())}))
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -237,15 +233,14 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                     Button(
                         onClick = {
                             val id = UUID.randomUUID()
-                            /*val variable = VariableBlock()
+                            blocksData.put(id, "")
+                            val variable = VariableBlock()
                             blocksInElse.add(ComposeBlock(id, {
                                 variable.Variable(
                                     index = id,
                                     blocks = blocksInElse
                                 )
-                            }, "variable"))*/
-                            val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
-                            blocksInElse.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocksInElse) }, "ifElse"))
+                            }, "variable", {setVariable(id, variable.GetData())}))
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -263,20 +258,18 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
             }
         }
     }
-    fun ConcatenationForBlocks(): String{
-        var i = 0;
-        val sb = StringBuilder()
-        while (i < ifElseBlocks.size){
-            val CurrentBlock = ifElseBlocks.get(i);
-            sb.append(blocksData.getValue(CurrentBlock.id))
-            i++
-        }
-        return sb.toString()
-    }
     fun GetData():String{
+        console.print("GETDATA CALLED")
         val sb = StringBuilder()
-        val content = ConcatenationForBlocks()
-        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
+        val ifContent = BlockConcatenation(ifBlocks)
+        val elseContent = BlockConcatenation(elseBlocks)
+        if (condition == ""){
+            console.print("NO CONDITION")
+        }
+        else{
+            console.print("OKEY ITS GOOD")
+            sb.append('(').append(condition).append(")?{(").append(ifContent).append(")}:{(").append(elseContent).append(")}")
+        }
         return sb.toString()
     }
 }
@@ -287,6 +280,6 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
 fun IfElsePreview() {
     val id = UUID.randomUUID()
     val blocks = mutableStateListOf<ComposeBlock>()
-    val ifElseBlock = IfElseBlock("", "", "", mutableStateListOf())
+    val ifElseBlock = IfElseBlock("",  mutableStateListOf(), mutableStateListOf())
     ifElseBlock.IfElse(index = id, blocks = blocks)
 }

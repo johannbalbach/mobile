@@ -126,11 +126,4 @@ class OutputBlock(var variableName: String = "") {
     fun GetData(): String{
         return variableName
     }
-
-    private fun setVariable(name: UUID, value: String) {
-        if (blocksData.contains(name)) {
-            blocksData.replace(name, value)
-        } else
-            blocksData.put(name, value)
-    }
 }

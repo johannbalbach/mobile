@@ -178,11 +178,4 @@ class VariableBlock(var name: String = "", var value: String = "") {
         }
         return sb.toString()
     }
-
-    private fun setVariable(name: UUID, value: String) {
-        if (blocksData.contains(name)) {
-            blocksData.replace(name, value)
-        } else
-            blocksData.put(name, value)
-    }
 }
