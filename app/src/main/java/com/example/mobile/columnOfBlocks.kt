@@ -222,22 +222,26 @@ fun ListOfBlocks(
                         onClick = {
                             val id = UUID.randomUUID()
                             blocksData.put(id, "")
-                            if(blocks.size % 4 == 0) {
+                            if(blocks.size % 5 == 0) {
                                 //val variable = VariableBlock()
                                 //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
                                 val ifelseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
                                 blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifelseBlock.GetData())}))
                                 statusField.newStatus("If-Else Block")
                             }
-                            else if(blocks.size % 4 == 1) {
+                            else if(blocks.size % 5 == 1) {
                                 val output = OutputBlock()
                                 blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
                                 statusField.newStatus("Output Block")
                             }
-                            else if(blocks.size % 4 == 2) {
+                            else if(blocks.size % 5 == 2) {
                                 val whileBlock = WhileBlock("", mutableStateListOf())
                                 blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
                                 statusField.newStatus("While Block")
+                            }
+                            else if(blocks.size % 5 == 3) {
+                                val arrayBlock = ArrayBlock("", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", {setVariable(id, arrayBlock.GetData())}))
                             }
                             else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())

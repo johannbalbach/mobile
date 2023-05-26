@@ -155,7 +155,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                             .background(LightGreen)
                             //.align(Alignment.Center)
                     ) {
-                        blocksInIf.forEach(){
+                        ifBlocks.forEach(){
                             it.compose()
                         }
                     }
@@ -163,14 +163,15 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                 Button(
                     onClick = {
                         val id = UUID.randomUUID()
+                        blocksData.put(id, "")
                         val variable = VariableBlock()
-                        ifBlocks = blocksInIf
-                        blocksInIf.add(ComposeBlock(id, {
+                        ifBlocks.add(ComposeBlock(id, {
                             variable.Variable(
                                 index = id,
-                                blocks = blocksInIf
+                                blocks = ifBlocks
                             )
                         }, "variable", {setVariable(id, variable.GetData())}))
+                        setVariable(index, GetData())
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -217,14 +218,14 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     contentAlignment = Alignment.Center
                 ) {
                     val state = rememberReorderableLazyListState(onMove = { from, to ->
-                        blocksInElse.add(to.index, blocksInElse.removeAt(from.index))
+                        elseBlocks.add(to.index, elseBlocks.removeAt(from.index))
                     })
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(LightGreen)
                     ) {
-                        blocksInElse.forEach(){
+                        elseBlocks.forEach(){
                             it.compose()
                         }
                     }
@@ -235,12 +236,13 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                             val id = UUID.randomUUID()
                             blocksData.put(id, "")
                             val variable = VariableBlock()
-                            blocksInElse.add(ComposeBlock(id, {
+                            elseBlocks.add(ComposeBlock(id, {
                                 variable.Variable(
                                     index = id,
-                                    blocks = blocksInElse
+                                    blocks = elseBlocks
                                 )
                             }, "variable", {setVariable(id, variable.GetData())}))
+                            setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -259,7 +261,6 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
         }
     }
     fun GetData():String{
-        console.print("GETDATA CALLED")
         val sb = StringBuilder()
         val ifContent = BlockConcatenation(ifBlocks)
         val elseContent = BlockConcatenation(elseBlocks)

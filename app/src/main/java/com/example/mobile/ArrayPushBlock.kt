@@ -160,7 +160,7 @@ class ArrayPushBlock(var name: String = "", var value: String = "", var arrayBlo
                                 //ArrayVariable(
                                 //    index = id
                                 //)
-                            }, "variable"))
+                            }, "variable", {setVariable(id, variable.GetData())}))
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
