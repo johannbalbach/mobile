@@ -247,58 +247,31 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                         }
                     }
                 }
-                Row {
-                    Button(
-                        onClick = {
-                            val id = UUID.randomUUID()
-                            blocksData.put(id, "")
-                            if (forBlocks.size % 4 != 0) {
-                                val variable = VariableBlock()
-                                forBlocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { variable.Variable(index = id, blocks = forBlocks) },
-                                        "variable",
-                                        { setVariable(id, variable.GetData()) })
-                                )
-                            } else {
-                                val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                forBlocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { forBlock.For(id, forBlocks) },
-                                        "for",
-                                        { setVariable(id, forBlock.GetData()) })
-                                )
-                            }
-                            setVariable(index, GetData())
-                        },
-                        modifier = Modifier
-                            .padding(vertical = 5.dp, horizontal = 10.dp)
-                            .size(30.dp),
-                        contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = DarkBlue,
-                            contentColor = Blue
-                        )
-                    ) {
-                        Icon(Icons.Filled.Add, "")
-                    }
-                    Button(
-                        onClick = {
-                            GetData()
-                        },
-                        modifier = Modifier
-                            .padding(vertical = 5.dp, horizontal = 10.dp)
-                            .size(30.dp),
-                        contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = DarkBlue,
-                            contentColor = Blue
-                        )
-                    ) {
-                        Icon(Icons.Filled.Done, "")
-                    }
+                Button(
+                    onClick = {
+                        val id = UUID.randomUUID()
+                        blocksData.put(id, "")
+                        if(forBlocks.size % 4 == 0) {
+                            val variable = VariableBlock()
+                            forBlocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = forBlocks) }, "variable",{setVariable(id, variable.GetData())}))
+                        }
+                        else if (forBlocks.size % 4 == 1){
+                            val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                            forBlocks.add(ComposeBlock(id, { ifElseBlock.IfElse(id, forBlocks) }, "for",{setVariable(id, ifElseBlock.GetData())}))
+                        }
+                        else {
+                            val forBlock = ForBlock("", "", "", mutableStateListOf())
+                            forBlocks.add(ComposeBlock(id, { forBlock.For(id, forBlocks) }, "for",{setVariable(id, forBlock.GetData())}))
+                        }
+                        setVariable(index, GetData())
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                        .size(30.dp),
+                    contentPadding = PaddingValues(5.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = DarkBlue, contentColor = Blue)
+                ) {
+                    Icon(Icons.Filled.Add,"")
                 }
             }
         }

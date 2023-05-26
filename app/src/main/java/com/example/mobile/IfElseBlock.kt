@@ -284,10 +284,9 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
         val ifContent = BlockConcatenation(ifBlocks)
         val elseContent = BlockConcatenation(elseBlocks)
         if (condition == ""){
-            console.print("NO CONDITION")
+
         }
         else{
-            console.print("OKEY ITS GOOD")
             sb.append('(').append(condition).append(")?{(").append(ifContent).append(")}:{(").append(elseContent).append(")}")
         }
         return sb.toString()
