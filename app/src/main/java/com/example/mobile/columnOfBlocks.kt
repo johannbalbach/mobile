@@ -6,19 +6,26 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -56,6 +63,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +78,7 @@ import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
+import java.lang.Integer.max
 import java.util.UUID
 
 data class ComposeBlock(
@@ -211,13 +220,19 @@ fun ListOfBlocks(
                     FloatingActionButton(
                         onClick = {
                             val id = UUID.randomUUID()
-                            if(blocks.size % 3 == 0) {
-                                val variable = VariableBlock()
-                                blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
+                            if(blocks.size % 4 == 0) {
+                                //val variable = VariableBlock()
+                                //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
+                                val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", ifelseBlock.GetData()))
                             }
-                            else if(blocks.size % 3 == 1) {
+                            else if(blocks.size % 4 == 1) {
                                 val output = OutputBlock()
                                 blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", output.GetData()))
+                            }
+                            else if(blocks.size % 4 == 2) {
+                                val whileBlock = WhileBlock("", "", "", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", whileBlock.GetData()))
                             }
                             else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
@@ -249,33 +264,30 @@ fun ListOfBlocks(
             CompositionLocalProvider(
                 LocalOverscrollConfiguration provides null
             ) {
+                val horizontalState = rememberScrollState()
                 LazyColumn(
                     state = state.listState,
                     modifier = Modifier
-                        //.background(Red)
                         .background(MaterialTheme.colorScheme.background)
                         .fillMaxSize()
+                        .horizontalScroll(horizontalState)
                         .reorderable(state)
                         .detectReorderAfterLongPress(state)
                 ) {
                     items(items = blocks, key = { it.id }) { block ->
                         ReorderableItem(state, key = block.id) { isDragging ->
-                            //val elevation = animateDpAsState(if (isDragging) 1.dp else 0.dp)
-                            //val colorDrag = animateColorAsState(if (isDragging) LightGray else White)
                             val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    //.background(colorDrag.value)
                                     .scale(scale = animateScale)
-                                //.shadow(elevation.value)
                             ) {
                                 block.compose()
                             }
                         }
                     }
-                    item{ Spacer(modifier = Modifier.padding(50.dp)) }
                 }
+                //Spacer(modifier = Modifier.padding(50.dp))
             }
         }
         ConsoleBottomSheet()

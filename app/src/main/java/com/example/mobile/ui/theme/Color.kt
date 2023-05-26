@@ -10,7 +10,10 @@ val LightRed = Color(0xFFF7B9B9)
 val Red = Color(0xFFE24040)
 val DarkRed = Color(0xFFC12F2F)
 
-val Green = Color(0xFF62B64E)
+val LightGreen = Color(0xFF9BE593)
+val Green = Color(0xFF30BA25)
+val DarkGreen = Color(0xFF219315)
+
 val Cyan = Color(0xFF53DBD1)
 
 val LightBlue = Color(0xFF6F9FD5)

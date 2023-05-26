@@ -67,27 +67,25 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import java.util.UUID
 
-class ForBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var forBlocks: SnapshotStateList<ComposeBlock>) {
+class WhileBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var whileBlocks: SnapshotStateList<ComposeBlock>) {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
         "SuspiciousIndentation"
     )
     @Composable
-    fun For(index: UUID, blocks: MutableList<ComposeBlock>){
-        val forVariable = rememberSaveable(index) { mutableStateOf(this.variableName) }
-        val forCondition = rememberSaveable(index) { mutableStateOf(this.variableName) }
-        val forIteration = rememberSaveable(index) { mutableStateOf(this.variableName) }
-        val blocksFor = remember { forBlocks }
+    fun While(index: UUID, blocks: MutableList<ComposeBlock>){
+        val whileCondition = rememberSaveable(index) { mutableStateOf(this.variableName) }
+        val blocksInWhile = remember { whileBlocks }
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Red, RoundedCornerShape(10.dp))
+            .background(Blue, RoundedCornerShape(10.dp))
             .fillMaxWidth()
         ){
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                    //.width((blocksFor.size*50).dp)
-                    //.defaultMinSize(minWidth = 300.dp)
+                    .width(IntrinsicSize.Max),
+                //.width((blocksFor.size*50).dp)
+                //.defaultMinSize(minWidth = 300.dp)
             ) {
                 Card(
                     //modifier = Modifier
@@ -95,16 +93,16 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                     //    .width(300.dp)
                     //    .height(70.dp),
                     modifier = Modifier
-                        .width(350.dp),
-                        //.fillMaxWidth(),
-                        //.fillMaxWidth(),
+                        .fillMaxWidth(),
+                    //.fillMaxWidth(),
+                    //.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = CardDefaults.cardColors(containerColor = Blue),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 ) {
                     Box(
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(vertical = 10.dp)
                             .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -114,15 +112,13 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                             horizontalArrangement = Arrangement.SpaceAround,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "FOR", fontFamily = SFDistangGalaxy, modifier = Modifier
+                            Text(text = "WHILE", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkBlue
-                            )
+                                fontSize = 30.sp, color = DarkBlue)
                             BasicTextField(
-                                value = forVariable.value,
+                                value = whileCondition.value,
                                 onValueChange = {
-                                    forVariable.value = it
+                                    whileCondition.value = it
                                 },
                                 decorationBox = { innerTextField ->
                                     Box(
@@ -131,63 +127,8 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                                 LightBlue,
                                                 RoundedCornerShape(percent = 10)
                                             )
-                                            .width(50.dp)
-                                            .height(50.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        innerTextField()
-                                    }
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = DarkBlue,
-                                    textAlign = TextAlign.Center
-                                ),
-                                singleLine = true,
-                                cursorBrush = SolidColor(Unspecified)
-                            )
-                            BasicTextField(
-                                value = forCondition.value,
-                                onValueChange = {
-                                    forCondition.value = it
-                                },
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                LightBlue,
-                                                RoundedCornerShape(percent = 10)
-                                            )
-                                            .width(50.dp)
-                                            .height(50.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        innerTextField()
-                                    }
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = DarkBlue,
-                                    textAlign = TextAlign.Center
-                                ),
-                                singleLine = true,
-                                cursorBrush = SolidColor(Unspecified)
-                            )
-                            BasicTextField(
-                                value = forIteration.value,
-                                onValueChange = {
-                                    forIteration.value = it
-                                },
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                LightBlue,
-                                                RoundedCornerShape(percent = 10)
-                                            )
-                                            .width(50.dp)
+                                            .width(IntrinsicSize.Min)
+                                            .defaultMinSize(minWidth = 150.dp)
                                             .height(50.dp)
                                             .wrapContentHeight()
                                     ) {
@@ -223,75 +164,40 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 }
                 Box(
                     modifier = Modifier
-                        .background(Green)
-                        //.defaultMinSize(minHeight = 50.dp)
-                        //.height(50.dp)
-                        //.height(IntrinsicSize.Min)
                         .fillMaxSize()
                         .wrapContentHeight(),
                     contentAlignment = Alignment.Center
                 ) {
-
-                    val state = rememberReorderableLazyListState(onMove = { from, to ->
-                        blocksFor.add(to.index, blocksFor.removeAt(from.index))
-                    })
-                    //CompositionLocalProvider(
-                    //    LocalOverscrollConfiguration provides null
-                    //) {
                     Column(
-                        //state = state.listState,
                         modifier = Modifier
-                            //.height((blocksFor.size * 200).dp)
-                            //.height(50.dp)
-                            //.fillMaxHeight()
-                            //.height(IntrinsicSize.Min)
                             .fillMaxSize()
-                            .background(Green)
-                            //.reorderable(state)
-                            //.detectReorderAfterLongPress(state)
+                            .background(LightBlue)
                     ) {
-                        /*items(items = blocksFor, key = { it.id }) { block ->
-                            ReorderableItem(state, key = block.id) { isDragging ->
-                                //val elevation = animateDpAsState(if (isDragging) 1.dp else 0.dp)
-                                //val colorDrag = animateColorAsState(if (isDragging) LightGray else White)
-                                val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        //.background(colorDrag.value)
-                                        .scale(scale = animateScale)
-                                    //.shadow(elevation.value)
-                                ) {
-                                    block.compose()
-                                }
-                            }
-                        }*/
-                        blocksFor.forEach(){
+                        blocksInWhile.forEach(){
                             it.compose()
                         }
-                        //Spacer(modifier = Modifier.padding(50.dp))
                     }
                 }
                 Button(
                     onClick = {
                         val id = UUID.randomUUID()
-                        if(blocksFor.size % 4 != 0) {
+                        if(blocksInWhile.size % 4 != 0) {
                             val variable = VariableBlock()
-                            blocksFor.add(ComposeBlock(id, { variable.Variable(
+                            blocksInWhile.add(ComposeBlock(id, { variable.Variable(
                                 index = id,
-                                blocks = blocksFor
+                                blocks = blocksInWhile
                             ) }, "variable", variable.GetData()))
                         }
                         else {
                             val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksFor.add(ComposeBlock(id, { forBlock.For(id, blocksFor) }, "for", forBlock.GetData()))
+                            blocksInWhile.add(ComposeBlock(id, { forBlock.For(id, blocksInWhile) }, "for", forBlock.GetData()))
                         }
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
                         .size(30.dp),
                     contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
+                    colors = ButtonDefaults.buttonColors(containerColor = DarkBlue, contentColor = Blue)
                 ) {
                     Icon(Icons.Filled.Add,"")
                 }
@@ -301,8 +207,8 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
     fun ConcatenationForBlocks():String{
         var  i = 0;
         val sb = StringBuilder()
-        while (i<forBlocks.size){
-            var CurrentBlock = forBlocks.get(i);
+        while (i<whileBlocks.size){
+            var CurrentBlock = whileBlocks.get(i);
             sb.append(CurrentBlock.Data)
         }
         return sb.toString()
@@ -318,9 +224,9 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
 @SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
-fun ForPreview() {
+fun WhilePreview() {
     val id = UUID.randomUUID()
     val blocks = mutableStateListOf<ComposeBlock>()
-    val forBlock = ForBlock("", "", "", mutableStateListOf())
-    forBlock.For(index = id, blocks = blocks)
+    val whileBlock = WhileBlock("", "", "", mutableStateListOf())
+    whileBlock.While(index = id, blocks = blocks)
 }
