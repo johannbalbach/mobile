@@ -5,7 +5,7 @@ import RPN
 
 fun MathExpression(string: String) {
     var expression = RPN(string)
-    expression.Math()
+    expression.math()
 }
 
 fun BuildProject(){
@@ -33,7 +33,7 @@ fun BuildProject(){
             if(blocksData.containsKey(CurrentBlock.id)) {
                 console.print("INFO IS" + blocksData.getValue(CurrentBlock.id))
                 if (table.containsKey(blocksData.getValue(CurrentBlock.id))){
-                    console.print("OUTPUT: "+blocksData.getValue(CurrentBlock.id) + "= " + table.getValue(blocksData.getValue(CurrentBlock.id)).GetDouble())
+                    console.print("OUTPUT: "+blocksData.getValue(CurrentBlock.id) + "= " + table.getValue(blocksData.getValue(CurrentBlock.id)).getDouble())
                 }
                 console.print("SMTH")
             }
