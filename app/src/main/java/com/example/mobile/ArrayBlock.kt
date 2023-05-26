@@ -69,7 +69,7 @@ import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.SFDistangGalaxy
 import java.util.UUID
 
-class ArrayBlock(var name: String = "", var value: String = "", var arrayBlocks: SnapshotStateList<ComposeBlock>) {
+class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<ComposeBlock>) {
     @Composable
     fun Array(index: UUID, blocks: MutableList<ComposeBlock>){
         val arrayName = rememberSaveable(index) { mutableStateOf(this.name) }
@@ -155,12 +155,10 @@ class ArrayBlock(var name: String = "", var value: String = "", var arrayBlocks:
                     Button(
                         onClick = {
                             val id = UUID.randomUUID()
+                            blocksData.put(id, "")
                             val variable = VariableBlock()
-                            arrayVariables.add(ComposeBlock(id, {
-                                ArrayVariable(
-                                    index = id
-                                )
-                            }, "variable",{ com.example.mobile.setVariable(id, variable.GetData()) }))
+                            arrayVariables.add(ComposeBlock(id, { ArrayVariable(index = id) }, "variable", {setVariable(id, variable.GetData())}))
+                            setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
@@ -202,17 +200,7 @@ class ArrayBlock(var name: String = "", var value: String = "", var arrayBlocks:
         }
     }
     fun GetData(): String {
-        val sb = StringBuilder()
-        if (name == ""){
-
-        }
-        else if (value == ""){
-            sb.append('(').append(name).append('=').append(0).append(')')
-        }
-        else{
-            sb.append('(').append(name).append('=').append(value).append(')')
-        }
-        return sb.toString()
+        return ""
     }
 
     private fun setVariable(name: UUID, value: String) {

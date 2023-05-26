@@ -153,7 +153,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                             .fillMaxSize()
                             .background(LightBlue)
                     ) {
-                        blocksInWhile.forEach() {
+                        whileBlocks.forEach() {
                             it.compose()
                         }
                     }
@@ -212,26 +212,15 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
             }
         }
     }
-
-    fun ConcatenationForBlocks(): String {
-        var i = 0;
-        val sb = StringBuilder()
-        while (i < whileBlocks.size) {
-            val CurrentBlock = whileBlocks.get(i);
-            sb.append(blocksData.getValue(CurrentBlock.id))
-            i++
-        }
-        return sb.toString()
-    }
-
     fun GetData():String{
+        println("GETDATA CALLED")
         val sb = StringBuilder()
         val content = BlockConcatenation(whileBlocks)
         if (condition == ""){
-            sb.append("@(").append(condition).append(")?{(").append(content).append(")}")
+
         }
         else{
-
+            sb.append("@(").append(condition).append(")?{(").append(content).append(")}")
         }
         return sb.toString()
     }
