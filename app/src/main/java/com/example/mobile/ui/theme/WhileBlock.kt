@@ -152,7 +152,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                             .fillMaxSize()
                             .background(LightBlue)
                     ) {
-                        blocksInWhile.forEach() {
+                        whileBlocks.forEach() {
                             it.compose()
                         }
                     }
@@ -161,17 +161,18 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                     onClick = {
                         val id = UUID.randomUUID()
                         blocksData.put(id, "")
-                        if(blocksInWhile.size % 4 != 0) {
+                        if(whileBlocks.size % 4 != 0) {
                             val variable = VariableBlock()
-                            blocksInWhile.add(ComposeBlock(id, { variable.Variable(
+                            whileBlocks.add(ComposeBlock(id, { variable.Variable(
                                 index = id,
-                                blocks = blocksInWhile
+                                blocks = whileBlocks
                             ) }, "variable",{setVariable(id, variable.GetData())}))
                         }
                         else {
                             val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksInWhile.add(ComposeBlock(id, { forBlock.For(id, blocksInWhile) }, "for", {setVariable(id, forBlock.GetData())}))
+                            whileBlocks.add(ComposeBlock(id, { forBlock.For(id, whileBlocks) }, "for", {setVariable(id, forBlock.GetData())}))
                         }
+                        setVariable(index, GetData())
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -187,26 +188,15 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
             }
         }
     }
-
-    fun ConcatenationForBlocks(): String {
-        var i = 0;
-        val sb = StringBuilder()
-        while (i < whileBlocks.size) {
-            val CurrentBlock = whileBlocks.get(i);
-            sb.append(blocksData.getValue(CurrentBlock.id))
-            i++
-        }
-        return sb.toString()
-    }
-
     fun GetData():String{
+        println("GETDATA CALLED")
         val sb = StringBuilder()
         val content = BlockConcatenation(whileBlocks)
         if (condition == ""){
-            sb.append("@(").append(condition).append(")?{(").append(content).append(")}")
+
         }
         else{
-
+            sb.append("@(").append(condition).append(")?{(").append(content).append(")}")
         }
         return sb.toString()
     }
