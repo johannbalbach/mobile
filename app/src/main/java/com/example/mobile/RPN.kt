@@ -319,7 +319,7 @@ class RPN() {
                     var firstOperand = if (numberStack.isNotEmpty()) numberStack.pop() else Value(0.0)
 
                     if (firstOperand.isThereVariable()){
-                        val arrayMember = Value(secondOperand.getDouble())
+                        val arrayMember = secondOperand
                         arrayMember.fatherName = firstOperand.variableName
                         arrayMember.memberIndex = firstOperand.array.size
                         if (firstOperand.array.isEmpty()) {
