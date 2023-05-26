@@ -48,7 +48,7 @@ class Value() {
             console.print("SOMEWHERE BOOL IS USED AS DOUBLE")
             return 0.0
         } else {
-            console.print("NO CHANGES")
+            console.print("NO CHANGES DOUBLE")
             return 0.0
         }
     }
@@ -74,7 +74,8 @@ class Value() {
         } else if (intValue != Int.MIN_VALUE) {
             console.print("SOMEWHERE INTEGER IS USED AS DOUBLE")
             return false
-        } else {
+        }
+        else{
             console.print("NO CHANGES")
             return false
         }

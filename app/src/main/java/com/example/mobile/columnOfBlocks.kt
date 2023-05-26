@@ -85,7 +85,7 @@ data class ComposeBlock(
     val onUpdate: () -> Unit
 )
 
-val AllBlocks = mutableStateListOf<ComposeBlock>()
+var AllBlocks = mutableStateListOf<ComposeBlock>()
 var blocksData = Hashtable<UUID, String>()
 val console = Console(mutableListOf())
 val statusField = CompilationStatus("Waiting For Code")
@@ -163,7 +163,6 @@ fun ListOfBlocks(
                         containerColor = MaterialTheme.colorScheme.surface
                     )
                 )
-                //Divider(color = Color(0xFFDEE2E6))
             }
         },
         bottomBar = {
@@ -224,38 +223,24 @@ fun ListOfBlocks(
                         onClick = {
                             val id = UUID.randomUUID()
                             blocksData.put(id, "")
-                            if (blocks.size % 5 == 0) {
-                                val ifelseBlock =
-                                    IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                blocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { ifelseBlock.IfElse(index = id, blocks = blocks) },
-                                        "ifElse",
-                                        { setVariable(id, ifelseBlock.GetData()) })
-                                )
-                                statusField.newStatus("If-Else Block")
-                            } else if (blocks.size % 5 == 1) {
+                            if(blocks.size % 5 == 0) {
+                                //val variable = VariableBlock()
+                                //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
+                                val ifelseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifelseBlock.GetData())}))
+                                statusField.newStatus("^ↀᴥↀ^")
+                            }
+                            else if(blocks.size % 5 == 1) {
                                 val output = OutputBlock()
-                                blocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { output.Output(index = id, blocks = blocks) },
-                                        "output",
-                                        { setVariable(id, output.GetData()) })
-                                )
-                                statusField.newStatus("Output Block")
-                            } else if (blocks.size % 5 == 2) {
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
+                                statusField.newStatus("ฅ•ω•ฅ")
+                            }
+                            else if(blocks.size % 5 == 2) {
                                 val whileBlock = WhileBlock("", mutableStateListOf())
-                                blocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { whileBlock.While(id, blocks) },
-                                        "while",
-                                        { setVariable(id, whileBlock.GetData()) })
-                                )
-                                statusField.newStatus("While Block")
-                            } else if (blocks.size % 5 == 3) {
+                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
+                                statusField.newStatus("(=^･ｪ･^=)")
+                            }
+                            else if(blocks.size % 5 == 3) {
                                 val arrayBlock = ArrayBlock("", mutableStateListOf())
                                 blocks.add(
                                     ComposeBlock(
@@ -266,14 +251,8 @@ fun ListOfBlocks(
                                 )
                             } else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { forBlock.For(id, blocks) },
-                                        "for",
-                                        { setVariable(id, forBlock.GetData()) })
-                                )
-                                statusField.newStatus("For Block")
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
+                                statusField.newStatus("(ฅ'ω'ฅ)")
                             }
                         },
                         shape = RoundedCornerShape(16.dp),

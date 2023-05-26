@@ -8,12 +8,10 @@ fun MathExpression(string: String) {
     var expression = RPN(string)
     expression.math()
 }
+
 fun Output(block: ComposeBlock){
-    console.print("FUNCTION CALLED")
     if(blocksData.containsKey(block.id)) {
-        console.print("FIRST IF PASSED")
         if (table.containsKey(blocksData.getValue(block.id))){
-            console.print("SECOND IF PASSED")
             console.print("OUTPUT: "+blocksData.getValue(block.id) + "= " + table.getValue(blocksData.getValue(block.id)).getOutput())
         }
     }
@@ -35,7 +33,6 @@ fun BlockConcatenation(Blocks: SnapshotStateList<ComposeBlock>): String {
     return sb.toString()
 }
 fun setVariable(id: UUID, value: String): Unit {
-    console.print("SETVARIABLE IS CALLED")
     if (blocksData.contains(id)) {
         blocksData.replace(id, value)
     } else
@@ -43,8 +40,9 @@ fun setVariable(id: UUID, value: String): Unit {
 }
 
 fun BuildProject(){
+    val SavedBlocks = AllBlocks
     console.clear()
-    console.print("BUILDING")
+    statusField.newStatus("BUILDING")
     var i = 0
     while (i < AllBlocks.size){
         var CurrentBlock = AllBlocks.get(i)
@@ -63,4 +61,6 @@ fun BuildProject(){
         }
         i++
     }
+    AllBlocks = SavedBlocks
+    table.clear()
 }
