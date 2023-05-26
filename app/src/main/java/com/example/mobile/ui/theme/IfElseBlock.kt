@@ -54,7 +54,7 @@ import com.example.mobile.ui.theme.SFDistangGalaxy
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import java.util.UUID
 
-class IfElseBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var ifElseBlocks: SnapshotStateList<ComposeBlock>) {
+class IfElseBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var ifBlocks: SnapshotStateList<ComposeBlock>, var elseBlocks: SnapshotStateList<ComposeBlock>) {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
         "SuspiciousIndentation"
     )
@@ -64,8 +64,8 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
         //Разбить "ifElseBlocks" на if и else
         //val blocksInIf = remember { ifElseBlocks }
         //val blocksInElse = remember { ifElseBlocks }
-        val blocksInIf = remember { SnapshotStateList<ComposeBlock>() }
-        val blocksInElse = remember { SnapshotStateList<ComposeBlock>() }
+        val blocksInIf = remember { ifBlocks }
+        val blocksInElse = remember { elseBlocks }
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
@@ -183,7 +183,7 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                                 index = id,
                                 blocks = blocksInIf
                             )
-                        }, "variable", variable.GetData()))
+                        }, "variable"))
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -252,7 +252,7 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                                     index = id,
                                     blocks = blocksInElse
                                 )
-                            }, "variable", variable.GetData()))
+                            }, "variable"))
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -270,19 +270,25 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
             }
         }
     }
-    fun ConcatenationForBlocks():String{
-        var  i = 0;
+    fun GetData(): String {
         val sb = StringBuilder()
-        while (i<ifElseBlocks.size){
-            var CurrentBlock = ifElseBlocks.get(i);
-            sb.append(CurrentBlock.Data)
-        }
+        val content = ConcatenationIfBlocks()
+        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
         return sb.toString()
     }
-    fun GetData():String{
+    fun ConcatenationIfBlocks(): String{
+        var i = 0;
         val sb = StringBuilder()
-        val content = ConcatenationForBlocks()
-        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
+        while (i < ifBlocks.size){
+            val CurrentBlock = ifBlocks.get(i);
+            sb.append(blocksData.getValue(CurrentBlock.id))
+            i++
+        }
+        while (i < elseBlocks.size){
+            val CurrentBlock = elseBlocks.get(i);
+            sb.append(blocksData.getValue(CurrentBlock.id))
+            i++
+        }
         return sb.toString()
     }
 }
@@ -293,6 +299,6 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
 fun IfElsePreview() {
     val id = UUID.randomUUID()
     val blocks = mutableStateListOf<ComposeBlock>()
-    val ifElseBlock = IfElseBlock("", "", "", mutableStateListOf())
+    val ifElseBlock = IfElseBlock("", "", "", mutableStateListOf(), mutableStateListOf())
     ifElseBlock.IfElse(index = id, blocks = blocks)
 }
