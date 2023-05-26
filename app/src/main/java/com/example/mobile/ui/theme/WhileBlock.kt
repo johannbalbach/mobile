@@ -67,35 +67,34 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import java.util.UUID
 
-class WhileBlock(var variableName: String = "", var condition: String = "", var iteration: String = "", var whileBlocks: SnapshotStateList<ComposeBlock>) {
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
+class WhileBlock(
+    var variableName: String = "",
+    var condition: String = "",
+    var iteration: String = "",
+    var whileBlocks: SnapshotStateList<ComposeBlock>
+) {
+    @SuppressLint(
+        "UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
         "SuspiciousIndentation"
     )
     @Composable
-    fun While(index: UUID, blocks: MutableList<ComposeBlock>){
+    fun While(index: UUID, blocks: MutableList<ComposeBlock>) {
         val whileCondition = rememberSaveable(index) { mutableStateOf(this.variableName) }
         val blocksInWhile = remember { whileBlocks }
 
         Box(modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Blue, RoundedCornerShape(10.dp))
-            .fillMaxWidth()
-        ){
+                .padding(vertical = 10.dp, horizontal = 20.dp)
+                .background(Blue, RoundedCornerShape(10.dp))
+                .fillMaxWidth()
+        ) {
             Column(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .width(IntrinsicSize.Max),
-                //.width((blocksFor.size*50).dp)
-                //.defaultMinSize(minWidth = 300.dp)
             ) {
                 Card(
-                    //modifier = Modifier
-                    //    .padding(vertical = 10.dp, horizontal = 20.dp)
-                    //    .width(300.dp)
-                    //    .height(70.dp),
                     modifier = Modifier
                         .fillMaxWidth(),
-                    //.fillMaxWidth(),
-                    //.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = CardDefaults.cardColors(containerColor = Blue),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
@@ -109,12 +108,14 @@ class WhileBlock(var variableName: String = "", var condition: String = "", var 
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceAround,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "WHILE", fontFamily = SFDistangGalaxy, modifier = Modifier
+                            Text(
+                                text = "WHILE", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkBlue)
+                                fontSize = 30.sp, color = DarkBlue
+                            )
                             BasicTextField(
                                 value = whileCondition.value,
                                 onValueChange = {
@@ -173,7 +174,7 @@ class WhileBlock(var variableName: String = "", var condition: String = "", var 
                             .fillMaxSize()
                             .background(LightBlue)
                     ) {
-                        blocksInWhile.forEach(){
+                        blocksInWhile.forEach() {
                             it.compose()
                         }
                     }
@@ -181,42 +182,40 @@ class WhileBlock(var variableName: String = "", var condition: String = "", var 
                 Button(
                     onClick = {
                         val id = UUID.randomUUID()
-                        if(blocksInWhile.size % 4 != 0) {
-                            val variable = VariableBlock()
-                            blocksInWhile.add(ComposeBlock(id, { variable.Variable(
-                                index = id,
-                                blocks = blocksInWhile
-                            ) }, "variable", variable.GetData()))
-                        }
-                        else {
-                            val forBlock = ForBlock("", "", "", mutableStateListOf())
-                            blocksInWhile.add(ComposeBlock(id, { forBlock.For(id, blocksInWhile) }, "for", forBlock.GetData()))
-                        }
+                        val whileBlock = WhileBlock("", "", "", mutableStateListOf())
+                        blocksInWhile.add(ComposeBlock(id, { whileBlock.While(id, blocksInWhile) }, "while"))
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
                         .size(30.dp),
                     contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkBlue, contentColor = Blue)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DarkBlue,
+                        contentColor = Blue
+                    )
                 ) {
-                    Icon(Icons.Filled.Add,"")
+                    Icon(Icons.Filled.Add, "")
                 }
             }
         }
     }
-    fun ConcatenationForBlocks():String{
-        var  i = 0;
+
+    fun ConcatenationForBlocks(): String {
+        var i = 0;
         val sb = StringBuilder()
-        while (i<whileBlocks.size){
-            var CurrentBlock = whileBlocks.get(i);
-            sb.append(CurrentBlock.Data)
+        while (i < whileBlocks.size) {
+            val CurrentBlock = whileBlocks.get(i);
+            sb.append(blocksData.getValue(CurrentBlock.id))
+            i++
         }
         return sb.toString()
     }
-    fun GetData():String{
+
+    fun GetData(): String {
         val sb = StringBuilder()
         val content = ConcatenationForBlocks()
-        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(").append(content).append('(').append(iteration).append(")}")
+        sb.append('(').append(variableName).append(')').append('(').append(condition).append(")?{(")
+            .append(content).append('(').append(iteration).append(")}")
         return sb.toString()
     }
 }

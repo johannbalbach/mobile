@@ -6,6 +6,10 @@ val LightOrange = Color(0xFFFCD5B8)
 val Orange = Color(0xFFE59638)
 val DarkOrange = Color(0xFFCC771A)
 
+val LightBrown = Color(0xFFFFC299)
+val Brown = Color(0xFFE17225)
+val DarkBrown = Color(0xFFBA5117)
+
 val LightRed = Color(0xFFF7B9B9)
 val Red = Color(0xFFE24040)
 val DarkRed = Color(0xFFC12F2F)

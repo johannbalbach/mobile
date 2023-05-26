@@ -74,19 +74,11 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
         ){
             Column(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .width(IntrinsicSize.Max)
-                    //.wrapContentWidth(),
             ) {
                 Card(
                     modifier = Modifier
-                        //.width(330.dp)
-                        //.width(IntrinsicSize.Min),
-                        //.wrapContentWidth()
-                        //.width(1000.dp),
-                        //.defaultMinSize(100.dp),
-                        .fillMaxWidth()
-                            ,
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = CardDefaults.cardColors(containerColor = Green),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
@@ -100,7 +92,6 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            //horizontalArrangement = Arrangement.Start,
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -183,7 +174,7 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                                 index = id,
                                 blocks = blocksInIf
                             )
-                        }, "variable", variable.GetData()))
+                        }, "variable"))
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -246,13 +237,15 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
                     Button(
                         onClick = {
                             val id = UUID.randomUUID()
-                            val variable = VariableBlock()
+                            /*val variable = VariableBlock()
                             blocksInElse.add(ComposeBlock(id, {
                                 variable.Variable(
                                     index = id,
                                     blocks = blocksInElse
                                 )
-                            }, "variable", variable.GetData()))
+                            }, "variable"))*/
+                            val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
+                            blocksInElse.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocksInElse) }, "ifElse"))
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -270,12 +263,13 @@ class IfElseBlock(var variableName: String = "", var condition: String = "", var
             }
         }
     }
-    fun ConcatenationForBlocks():String{
-        var  i = 0;
+    fun ConcatenationForBlocks(): String{
+        var i = 0;
         val sb = StringBuilder()
-        while (i<ifElseBlocks.size){
-            var CurrentBlock = ifElseBlocks.get(i);
-            sb.append(CurrentBlock.Data)
+        while (i < ifElseBlocks.size){
+            val CurrentBlock = ifElseBlocks.get(i);
+            sb.append(blocksData.getValue(CurrentBlock.id))
+            i++
         }
         return sb.toString()
     }

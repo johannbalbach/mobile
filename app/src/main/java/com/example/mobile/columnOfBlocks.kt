@@ -30,9 +30,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.WbCloudy
+import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -208,7 +211,7 @@ fun ListOfBlocks(
                         onClick = onToggleTheme,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Palette,
+                            imageVector = Icons.Rounded.WbSunny,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
@@ -216,15 +219,15 @@ fun ListOfBlocks(
                     FloatingActionButton(
                         onClick = {
                             val id = UUID.randomUUID()
-                            if(blocks.size % 4 == 0) {
-                                //val variable = VariableBlock()
-                                //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
-                                val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse"))
+                            if(blocks.size % 4 == 10) {
+                                //val array = ArrayBlock("", "", mutableStateListOf())
+                                //blocks.add(ComposeBlock(id, { array.Array(index = id, blocks = blocks) }, "variable"))
+                                //val ifelseBlock = IfElseBlock("", "", "", mutableStateListOf())
+                                //blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse"))
                             }
                             else if(blocks.size % 4 == 1) {
-                                val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output"))
+                                val array = ArrayBlock("", "", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { array.Array(index = id, blocks = blocks) }, "variable"))
                             }
                             else if(blocks.size % 4 == 2) {
                                 val whileBlock = WhileBlock("", "", "", mutableStateListOf())

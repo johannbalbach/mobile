@@ -80,24 +80,17 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Red, RoundedCornerShape(10.dp))
+            .background(Blue, RoundedCornerShape(10.dp))
             .fillMaxWidth()
         ){
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                    //.width((blocksFor.size*50).dp)
-                    //.defaultMinSize(minWidth = 300.dp)
+                    .fillMaxWidth()
+                    .width(IntrinsicSize.Max),
             ) {
                 Card(
-                    //modifier = Modifier
-                    //    .padding(vertical = 10.dp, horizontal = 20.dp)
-                    //    .width(300.dp)
-                    //    .height(70.dp),
                     modifier = Modifier
-                        .width(350.dp),
-                        //.fillMaxWidth(),
-                        //.fillMaxWidth(),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
                     colors = CardDefaults.cardColors(containerColor = Blue),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
@@ -119,96 +112,114 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                     .padding(horizontal = 10.dp),
                                 fontSize = 30.sp, color = DarkBlue
                             )
-                            BasicTextField(
-                                value = forVariable.value,
-                                onValueChange = {
-                                    variableName = it
-                                    forVariable.value = variableName
-                                    setFor(index, GetData())
-                                },
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                LightBlue,
-                                                RoundedCornerShape(percent = 10)
-                                            )
-                                            .width(50.dp)
-                                            .height(50.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        innerTextField()
-                                    }
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = DarkBlue,
-                                    textAlign = TextAlign.Center
-                                ),
-                                singleLine = true,
-                                cursorBrush = SolidColor(Unspecified)
-                            )
-                            BasicTextField(
-                                value = forCondition.value,
-                                onValueChange = {
-                                    condition = it
-                                    forCondition.value = condition
-                                    setFor(index, GetData())
-                                },
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                LightBlue,
-                                                RoundedCornerShape(percent = 10)
-                                            )
-                                            .width(50.dp)
-                                            .height(50.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        innerTextField()
-                                    }
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = DarkBlue,
-                                    textAlign = TextAlign.Center
-                                ),
-                                singleLine = true,
-                                cursorBrush = SolidColor(Unspecified)
-                            )
-                            BasicTextField(
-                                value = forIteration.value,
-                                onValueChange = {
-                                    iteration = it
-                                    forIteration.value = iteration
-                                    setFor(index, GetData())
-                                },
-                                decorationBox = { innerTextField ->
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                LightBlue,
-                                                RoundedCornerShape(percent = 10)
-                                            )
-                                            .width(50.dp)
-                                            .height(50.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        innerTextField()
-                                    }
-                                },
-                                textStyle = TextStyle(
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = DarkBlue,
-                                    textAlign = TextAlign.Center
-                                ),
-                                singleLine = true,
-                                cursorBrush = SolidColor(Unspecified)
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                            ) {
+                                BasicTextField(
+                                    value = forVariable.value,
+                                    onValueChange = {
+                                        variableName = it
+                                        forVariable.value = variableName
+                                        setFor(index, GetData())
+                                    },
+                                    decorationBox = { innerTextField ->
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    LightBlue,
+                                                    RoundedCornerShape(percent = 10)
+                                                )
+                                                .width(IntrinsicSize.Min)
+                                                .defaultMinSize(minWidth = 70.dp)
+                                                .height(50.dp)
+                                                .wrapContentHeight()
+                                        ) {
+                                            innerTextField()
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = DarkBlue,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    singleLine = true,
+                                    cursorBrush = SolidColor(Unspecified)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                            ) {
+                                BasicTextField(
+                                    value = forCondition.value,
+                                    onValueChange = {
+                                        condition = it
+                                        forCondition.value = condition
+                                        setFor(index, GetData())
+                                    },
+                                    decorationBox = { innerTextField ->
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    LightBlue,
+                                                    RoundedCornerShape(percent = 10)
+                                                )
+                                                .width(IntrinsicSize.Min)
+                                                .defaultMinSize(minWidth = 70.dp)
+                                                .height(50.dp)
+                                                .wrapContentHeight()
+                                        ) {
+                                            innerTextField()
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = DarkBlue,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    singleLine = true,
+                                    cursorBrush = SolidColor(Unspecified)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp)
+                            ) {
+                                BasicTextField(
+                                    value = forIteration.value,
+                                    onValueChange = {
+                                        iteration = it
+                                        forIteration.value = iteration
+                                        setFor(index, GetData())
+                                    },
+                                    decorationBox = { innerTextField ->
+                                        Box(
+                                            modifier = Modifier
+                                                .background(
+                                                    LightBlue,
+                                                    RoundedCornerShape(percent = 10)
+                                                )
+                                                .width(IntrinsicSize.Min)
+                                                .defaultMinSize(minWidth = 70.dp)
+                                                .height(50.dp)
+                                                .wrapContentHeight()
+                                        ) {
+                                            innerTextField()
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = DarkBlue,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    singleLine = true,
+                                    cursorBrush = SolidColor(Unspecified)
+                                )
+                            }
                             Button(
                                 onClick = {
                                     blocks.remove(blocks.find { it.id == index })
@@ -229,10 +240,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 }
                 Box(
                     modifier = Modifier
-                        .background(Green)
-                        //.defaultMinSize(minHeight = 50.dp)
-                        //.height(50.dp)
-                        //.height(IntrinsicSize.Min)
+                        .background(LightBlue)
                         .fillMaxSize()
                         .wrapContentHeight(),
                     contentAlignment = Alignment.Center
@@ -241,41 +249,14 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                     val state = rememberReorderableLazyListState(onMove = { from, to ->
                         blocksFor.add(to.index, blocksFor.removeAt(from.index))
                     })
-                    //CompositionLocalProvider(
-                    //    LocalOverscrollConfiguration provides null
-                    //) {
                     Column(
-                        //state = state.listState,
                         modifier = Modifier
-                            //.height((blocksFor.size * 200).dp)
-                            //.height(50.dp)
-                            //.fillMaxHeight()
-                            //.height(IntrinsicSize.Min)
                             .fillMaxSize()
-                            .background(Green)
-                            //.reorderable(state)
-                            //.detectReorderAfterLongPress(state)
+                            .background(LightBlue)
                     ) {
-                        /*items(items = blocksFor, key = { it.id }) { block ->
-                            ReorderableItem(state, key = block.id) { isDragging ->
-                                //val elevation = animateDpAsState(if (isDragging) 1.dp else 0.dp)
-                                //val colorDrag = animateColorAsState(if (isDragging) LightGray else White)
-                                val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        //.background(colorDrag.value)
-                                        .scale(scale = animateScale)
-                                    //.shadow(elevation.value)
-                                ) {
-                                    block.compose()
-                                }
-                            }
-                        }*/
                         blocksFor.forEach(){
                             it.compose()
                         }
-                        //Spacer(modifier = Modifier.padding(50.dp))
                     }
                 }
                 Button(
@@ -294,7 +275,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                         .padding(vertical = 5.dp, horizontal = 10.dp)
                         .size(30.dp),
                     contentPadding = PaddingValues(5.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
+                    colors = ButtonDefaults.buttonColors(containerColor = DarkBlue, contentColor = Blue)
                 ) {
                     Icon(Icons.Filled.Add,"")
                 }

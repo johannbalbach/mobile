@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,7 +26,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,16 +58,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ComposeBlock
+import com.example.mobile.ui.theme.Brown
+import com.example.mobile.ui.theme.DarkBlue
+import com.example.mobile.ui.theme.DarkBrown
 import com.example.mobile.ui.theme.DarkOrange
+import com.example.mobile.ui.theme.LightBlue
+import com.example.mobile.ui.theme.LightBrown
 import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
+import com.example.mobile.ui.theme.SFDistangGalaxy
 import java.util.UUID
 
-class VariableBlock(var name: String = "", var value: String = "") {
+class ArrayPushBlock(var name: String = "", var value: String = "", var arrayBlocks: SnapshotStateList<ComposeBlock>) {
     @Composable
-    fun Variable(index: UUID, blocks: MutableList<ComposeBlock>){
-        val variableName = rememberSaveable(index) { mutableStateOf(this.name) }
-        val variableValue = rememberSaveable(index) { mutableStateOf(this.value) }
+    fun Array(index: UUID, blocks: MutableList<ComposeBlock>){
+        val arrayName = rememberSaveable(index) { mutableStateOf(this.name) }
+        val arrayVariables = remember { arrayBlocks }
 
         Card(
             modifier = Modifier
@@ -71,7 +81,7 @@ class VariableBlock(var name: String = "", var value: String = "") {
                 .height(70.dp)
                 .wrapContentWidth(),
             shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Orange),
+            colors = CardDefaults.cardColors(containerColor = Brown),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         ) {
             Box(modifier = Modifier
@@ -79,20 +89,25 @@ class VariableBlock(var name: String = "", var value: String = "") {
                 contentAlignment = Alignment.Center){
                 Row(modifier = Modifier
                     .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Text(
+                        text = "ARR", fontFamily = SFDistangGalaxy, modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                        fontSize = 30.sp, color = DarkBrown
+                    )
                     BasicTextField(
-                        value = variableName.value,
+                        value = arrayName.value,
                         onValueChange = {
                             name = it
-                            variableName.value = name
+                            arrayName.value = name
                             setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightOrange, RoundedCornerShape(percent = 10))
+                                    .background(LightBrown, RoundedCornerShape(percent = 10))
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 50.dp)
                                     .height(50.dp)
@@ -107,57 +122,78 @@ class VariableBlock(var name: String = "", var value: String = "") {
                             }
                         },
                         cursorBrush = SolidColor(Color.Transparent),
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange),
+                        //, textAlign = TextAlign.Center
+                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkBrown),
                         singleLine = true
+                    )
+                    Text(
+                        text = "= [", fontFamily = SFDistangGalaxy, modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                        fontSize = 40.sp, color = DarkBrown
                     )
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 5.dp)
+                            .fillMaxSize()
+                            .wrapContentHeight(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "=", fontSize = 30.sp, color = DarkOrange)
-                    }
-                    BasicTextField(
-                        value = variableValue.value,
-                        onValueChange = {
-                            value = it
-                            variableValue.value = value
-                            setVariable(index, GetData())
-                        },
-                        decorationBox = { innerTextField ->
-                            Box(
-                                modifier = Modifier
-                                    .background(LightOrange, RoundedCornerShape(percent = 10))
-                                    .width(IntrinsicSize.Min)
-                                    .defaultMinSize(minWidth = 80.dp)
-                                    .height(50.dp)
-                                    .wrapContentHeight(),
-                            ){
-                                Box(
-                                    modifier = Modifier
-                                        .padding(horizontal = 15.dp)
-                                ) {
-                                    innerTextField()
-                                }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(LightBrown)
+                        ) {
+                            arrayVariables.forEach() {
+                                it.compose()
                             }
-                        },
-                        cursorBrush = SolidColor(Color.Unspecified),
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange),
-                        singleLine = true
+                        }
+                    }
+                    Text(
+                        text = "]", fontFamily = SFDistangGalaxy, modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                        fontSize = 40.sp, color = DarkBrown
                     )
                     Button(
                         onClick = {
-                            blocks.remove(blocks.find { it.id == index })
-                            println()
-                            blocks.forEach{
-                                print(it.id)
-                                print(' ')
-                            }
+                            val id = UUID.randomUUID()
+                            val variable = VariableBlock()
+                            arrayVariables.add(ComposeBlock(id, {
+                                //ArrayVariable(
+                                //    index = id
+                                //)
+                            }, "variable"))
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
                             .size(30.dp),
                         contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
+                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
+                    ) {
+                        Icon(Icons.Filled.Add,"")
+                    }
+                    Button(
+                        onClick = {
+                            val id = UUID.randomUUID()
+                            val variable = VariableBlock()
+                            if(arrayVariables.size > 0)
+                                arrayVariables.removeLast()
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
+                    ) {
+                        Icon(Icons.Filled.Remove,"")
+                    }
+                    Button(
+                        onClick = {
+                            blocks.remove(blocks.find { it.id == index })
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .size(30.dp),
+                        contentPadding = PaddingValues(5.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
                     ) {
                         Icon(Icons.Filled.Close,"")
                     }
