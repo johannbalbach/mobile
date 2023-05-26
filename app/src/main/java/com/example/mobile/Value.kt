@@ -1,14 +1,18 @@
 package com.example.mobile
 
-class Value {
-    var doubleValue = Double.MIN_VALUE
-    var intValue = Int.MIN_VALUE
-    var boolValue = false
-    var WasThereChanges = false
-    var variableName = ""
-    var type = 0; // 1 - Double, 2 - Int, 3 - Boolean
+import java.util.Vector
 
-    constructor(){}
+class Value() {
+    private var doubleValue = Double.MIN_VALUE
+    private var intValue = Int.MIN_VALUE
+    private var boolValue = false
+
+    var array = Vector<Value>()
+    var isChanged = false
+    var variableName = ""
+    var type = 0; // 1 - Double, 2 - Int, 3 - Boolean, 4 - array
+    var fatherName = ""
+    var memberIndex = -1
 
     constructor(value: Double, name: String = "") : this() {
         this.doubleValue = value
@@ -24,17 +28,23 @@ class Value {
 
     constructor(value: Boolean, name: String = "") : this() {
         this.boolValue = value
-        this.WasThereChanges = true
+        this.isChanged = true
         this.variableName = name
         this.type = 3
     }
 
-    fun GetDouble(): Double {
+    constructor(value: Vector<Value>, name: String = "") : this() {
+        this.array = value
+        this.variableName = name
+        this.type = 4
+    }
+
+    fun getDouble(): Double {
         if (doubleValue != Double.MIN_VALUE)
             return doubleValue
         else if (intValue != Int.MIN_VALUE)
             return intValue.toDouble()
-        else if (WasThereChanges) {
+        else if (isChanged) {
             // println("THERE'RE SOME MISTAKES IN DOUBLE")
             return 0.0
         } else {
@@ -42,12 +52,12 @@ class Value {
             return 0.0
         }
     }
-    fun GetInteger(): Int {
+    fun getInteger(): Int {
         if (intValue != Int.MIN_VALUE)
             return intValue
         else if (doubleValue != Double.MIN_VALUE)
             return doubleValue.toInt()
-        else if (WasThereChanges) {
+        else if (isChanged) {
             // println("THERE'RE SOME MISTAKES IN INTEGER")
             return 0
         } else {
@@ -55,8 +65,8 @@ class Value {
             return 0
         }
     }
-    fun GetBool(): Boolean {
-        if (WasThereChanges)
+    fun getBool(): Boolean {
+        if (isChanged)
             return boolValue
         else if (doubleValue != Double.MIN_VALUE) {
             //println("THERE'RE SOME MISTAKES IN BOOL WITH DOUBLE")
@@ -69,10 +79,50 @@ class Value {
             return false
         }
     }
-    fun IsThereVariable(): Boolean {
+    fun getOutput(): String{
+        when(type){
+            1 -> return getDouble().toString()
+            2 -> return getInteger().toString()
+            3 -> return getBool().toString()
+            4 -> {
+                var i = 0
+                var sb = StringBuilder()
+                while (i < array.size){
+                    if (i == array.size-1)
+                        sb.append(array[i].getOutput())
+                    else
+                        sb.append(array[i].getOutput()).append(", ")
+                    i++
+                }
+                return sb.toString()
+            }
+            else -> return "SOME MISTAKES"
+        }
+    }
+    fun isThereVariable(): Boolean {
         if (variableName != "")
             return true
         else
             return false
+    }
+    fun setValue(equal: Value){
+        when(equal.type){
+            1 -> {
+                this.doubleValue = equal.getDouble()
+                this.intValue = Int.MIN_VALUE
+                this.boolValue = false
+            }
+            2 ->{
+                this.doubleValue = Double.MIN_VALUE
+                this.intValue = equal.getInteger()
+                this.boolValue = false
+            }
+            3 ->{
+                this.doubleValue = Double.MIN_VALUE
+                this.intValue = Int.MIN_VALUE
+                this.boolValue = equal.getBool()
+            }
+            4 -> this.array = equal.array
+        }
     }
 }

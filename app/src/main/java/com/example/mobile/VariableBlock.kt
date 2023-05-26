@@ -62,8 +62,9 @@ import java.util.UUID
 class VariableBlock(var name: String = "", var value: String = "") {
     @Composable
     fun Variable(index: UUID, blocks: MutableList<ComposeBlock>){
-        var variableName by rememberSaveable(index) { mutableStateOf(this.name) }
-        var variableValue by rememberSaveable(index) { mutableStateOf(this.value) }
+        val variableName = rememberSaveable(index) { mutableStateOf(this.name) }
+        val variableValue = rememberSaveable(index) { mutableStateOf(this.value) }
+
         Card(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 20.dp)
@@ -85,9 +86,11 @@ class VariableBlock(var name: String = "", var value: String = "") {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BasicTextField(
-                        value = variableName,
+                        value = variableName.value,
                         onValueChange = {
-                            variableName = it
+                            name = it
+                            variableName.value = name
+                            setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
@@ -118,9 +121,11 @@ class VariableBlock(var name: String = "", var value: String = "") {
                         Text(text = "=", fontSize = 30.sp, color = DarkOrange)
                     }
                     BasicTextField(
-                        value = variableValue,
+                        value = variableValue.value,
                         onValueChange = {
-                            variableValue = it
+                            value = it
+                            variableValue.value = value
+                            setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
@@ -163,12 +168,11 @@ class VariableBlock(var name: String = "", var value: String = "") {
                 }
             }
         }
-        name = variableName.toString()
-        value = variableValue.toString()
     }
     fun GetData(): String {
         val sb = StringBuilder()
         if (name == ""){
+
         }
         else if (value == ""){
             sb.append('(').append(name).append('=').append(0).append(')')
@@ -177,5 +181,12 @@ class VariableBlock(var name: String = "", var value: String = "") {
             sb.append('(').append(name).append('=').append(value).append(')')
         }
         return sb.toString()
+    }
+
+    private fun setVariable(name: UUID, value: String) {
+        if (blocksData.contains(name)) {
+            blocksData.replace(name, value)
+        } else
+            blocksData.put(name, value)
     }
 }

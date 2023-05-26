@@ -5,27 +5,38 @@ import RPN
 
 fun MathExpression(string: String) {
     var expression = RPN(string)
-    expression.Math()
+    expression.math()
 }
 
 fun BuildProject(){
-    println("BUILDING")
+    var values = blocksData.values
+    var j = 0
+    while(j < values.size)
+    {
+        console.print(values.elementAt(j))
+        j++
+    }
+    console.print("BUILDING")
     var i = 0
     while (i < AllBlocks.size){
-        var CurrentBlock = AllBlocks.get(i);
-        println(CurrentBlock.blockType)
-        println(CurrentBlock.id)
+        var CurrentBlock = AllBlocks.get(i)
+        console.print(CurrentBlock.blockType)
+        console.print(CurrentBlock.id.toString())
         if (CurrentBlock.blockType == "variable"){
-            MathExpression(CurrentBlock.Data)
-            println(CurrentBlock.Data)
-            println("WORKING")
+            if(blocksData.containsKey(CurrentBlock.id)) {
+                MathExpression(blocksData.getValue(CurrentBlock.id))
+                console.print(blocksData.getValue(CurrentBlock.id))
+                console.print("WORKING")
+            }
         }
         else if (CurrentBlock.blockType == "output"){
-            println("INFO IS" + CurrentBlock.Data)
-            if (table.containsKey(CurrentBlock.Data)){
-                println("OUTPUT: "+CurrentBlock.Data + "= " + table.getValue(CurrentBlock.Data).GetDouble())
+            if(blocksData.containsKey(CurrentBlock.id)) {
+                console.print("INFO IS" + blocksData.getValue(CurrentBlock.id))
+                if (table.containsKey(blocksData.getValue(CurrentBlock.id))){
+                    console.print("OUTPUT: "+blocksData.getValue(CurrentBlock.id) + "= " + table.getValue(blocksData.getValue(CurrentBlock.id)).getDouble())
+                }
+                console.print("SMTH")
             }
-            println("SMTH")
         }
         else if (CurrentBlock.blockType == "for"){
         }

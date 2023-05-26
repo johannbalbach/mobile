@@ -70,7 +70,9 @@ class OutputBlock(var variableName: String = "") {
                     BasicTextField(
                         value = outputExpression.value,
                         onValueChange = {
-                            outputExpression.value = it
+                            variableName = it
+                            outputExpression.value = variableName
+                            setVariable(index, GetData())
                         },
                         decorationBox = { innerTextField ->
                             Box(
@@ -118,10 +120,17 @@ class OutputBlock(var variableName: String = "") {
                 }
             }
         }
-        variableName = outputExpression.toString()
+        blocksData.put(index, GetData())
     }
 
     fun GetData(): String{
         return variableName
+    }
+
+    private fun setVariable(name: UUID, value: String) {
+        if (blocksData.contains(name)) {
+            blocksData.replace(name, value)
+        } else
+            blocksData.put(name, value)
     }
 }
