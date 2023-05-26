@@ -67,6 +67,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile.ui.theme.DragScale
 import com.example.mobile.ui.theme.Nunito
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -89,7 +90,8 @@ var blocksData = Hashtable<UUID, String>()
 val console = Console(mutableListOf())
 val statusField = CompilationStatus("Waiting For Code")
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
+@SuppressLint(
+    "UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
     "SuspiciousIndentation"
 )
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -115,7 +117,6 @@ fun ListOfBlocks(
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = Nunito,
                                 fontSize = 21.sp,
-                                //color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier
                                     .padding(start = 0.dp)
                             )
@@ -124,8 +125,6 @@ fun ListOfBlocks(
                     navigationIcon = {
                         IconButton(
                             onClick = { /* doSomething() */ },
-                            //colors = IconButtonDefaults.iconButtonColors(
-                            //    contentColor = MaterialTheme.colorScheme.onSurface)
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Menu,
@@ -225,30 +224,55 @@ fun ListOfBlocks(
                         onClick = {
                             val id = UUID.randomUUID()
                             blocksData.put(id, "")
-                            if(blocks.size % 5 == 0) {
-                                //val variable = VariableBlock()
-                                //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
-                                val ifelseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifelseBlock.GetData())}))
+                            if (blocks.size % 5 == 0) {
+                                val ifelseBlock =
+                                    IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                                blocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { ifelseBlock.IfElse(index = id, blocks = blocks) },
+                                        "ifElse",
+                                        { setVariable(id, ifelseBlock.GetData()) })
+                                )
                                 statusField.newStatus("If-Else Block")
-                            }
-                            else if(blocks.size % 5 == 1) {
+                            } else if (blocks.size % 5 == 1) {
                                 val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
+                                blocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { output.Output(index = id, blocks = blocks) },
+                                        "output",
+                                        { setVariable(id, output.GetData()) })
+                                )
                                 statusField.newStatus("Output Block")
-                            }
-                            else if(blocks.size % 5 == 2) {
+                            } else if (blocks.size % 5 == 2) {
                                 val whileBlock = WhileBlock("", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
+                                blocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { whileBlock.While(id, blocks) },
+                                        "while",
+                                        { setVariable(id, whileBlock.GetData()) })
+                                )
                                 statusField.newStatus("While Block")
-                            }
-                            else if(blocks.size % 5 == 3) {
+                            } else if (blocks.size % 5 == 3) {
                                 val arrayBlock = ArrayBlock("", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", {setVariable(id, arrayBlock.GetData())}))
-                            }
-                            else {
+                                blocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { arrayBlock.Array(id, blocks) },
+                                        "array",
+                                        { setVariable(id, arrayBlock.GetData()) })
+                                )
+                            } else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
+                                blocks.add(
+                                    ComposeBlock(
+                                        id,
+                                        { forBlock.For(id, blocks) },
+                                        "for",
+                                        { setVariable(id, forBlock.GetData()) })
+                                )
                                 statusField.newStatus("For Block")
                             }
                         },
@@ -262,7 +286,6 @@ fun ListOfBlocks(
                     }
                 }
             }
-            //Divider(color = White)
         }
     ) {
         Box(
@@ -288,7 +311,7 @@ fun ListOfBlocks(
                 ) {
                     items(items = blocks, key = { it.id }) { block ->
                         ReorderableItem(state, key = block.id) { isDragging ->
-                            val animateScale by animateFloatAsState(if (isDragging) 1.05f else 1f)
+                            val animateScale by animateFloatAsState(if (isDragging) DragScale else 1f)
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -299,7 +322,6 @@ fun ListOfBlocks(
                         }
                     }
                 }
-                //Spacer(modifier = Modifier.padding(50.dp))
             }
         }
         console.ConsoleBottomSheet(mutableConsoleValue)

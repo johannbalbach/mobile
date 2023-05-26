@@ -54,9 +54,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ComposeBlock
+import com.example.mobile.ui.theme.ButtonSize
 import com.example.mobile.ui.theme.DarkOrange
+import com.example.mobile.ui.theme.Elevetaion
 import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
+import com.example.mobile.ui.theme.RoundingSize
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import java.util.UUID
 
 class VariableBlock(var name: String = "", var value: String = "") {
@@ -70,9 +75,9 @@ class VariableBlock(var name: String = "", var value: String = "") {
                 .padding(vertical = 10.dp, horizontal = 20.dp)
                 .height(70.dp)
                 .wrapContentWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(RoundingSize.dp),
             colors = CardDefaults.cardColors(containerColor = Orange),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
         ) {
             Box(modifier = Modifier
                 .fillMaxHeight(),
@@ -92,10 +97,10 @@ class VariableBlock(var name: String = "", var value: String = "") {
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightOrange, RoundedCornerShape(percent = 10))
+                                    .background(LightOrange, RoundedCornerShape(percent = RoundingSize))
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 50.dp)
-                                    .height(50.dp)
+                                    .height(TextFieldHeight)
                                     .wrapContentHeight(),
                             ){
                                 Box(
@@ -107,7 +112,7 @@ class VariableBlock(var name: String = "", var value: String = "") {
                             }
                         },
                         cursorBrush = SolidColor(Color.Transparent),
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange),
+                        textStyle = TextStyle(fontSize = TextFieldFS, fontWeight = FontWeight.Bold, color = DarkOrange),
                         singleLine = true
                     )
                     Box(
@@ -126,10 +131,10 @@ class VariableBlock(var name: String = "", var value: String = "") {
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightOrange, RoundedCornerShape(percent = 10))
+                                    .background(LightOrange, RoundedCornerShape(percent = RoundingSize))
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 80.dp)
-                                    .height(50.dp)
+                                    .height(TextFieldHeight)
                                     .wrapContentHeight(),
                             ){
                                 Box(
@@ -141,7 +146,7 @@ class VariableBlock(var name: String = "", var value: String = "") {
                             }
                         },
                         cursorBrush = SolidColor(Color.Unspecified),
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkOrange),
+                        textStyle = TextStyle(fontSize = TextFieldFS, fontWeight = FontWeight.Bold, color = DarkOrange),
                         singleLine = true
                     )
                     Button(
@@ -150,7 +155,7 @@ class VariableBlock(var name: String = "", var value: String = "") {
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = DarkOrange, contentColor = Orange)
                     ) {

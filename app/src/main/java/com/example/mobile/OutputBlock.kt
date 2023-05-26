@@ -37,10 +37,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile.ui.theme.ButtonSize
 import com.example.mobile.ui.theme.DarkRed
+import com.example.mobile.ui.theme.Elevetaion
 import com.example.mobile.ui.theme.LightRed
 import com.example.mobile.ui.theme.Red
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import java.util.UUID
 
 class OutputBlock(var variableName: String = "") {
@@ -50,11 +56,10 @@ class OutputBlock(var variableName: String = "") {
         Card(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 20.dp)
-                //.width(300.dp)
                 .height(70.dp),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(RoundingSize.dp),
             colors = CardDefaults.cardColors(containerColor = Red),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
         ) {
             Box(modifier = Modifier
                 .fillMaxSize(),
@@ -66,7 +71,7 @@ class OutputBlock(var variableName: String = "") {
                 ) {
                     Text(text = "OUT", fontFamily = SFDistangGalaxy, modifier = Modifier
                         .padding(horizontal = 10.dp),
-                        fontSize = 30.sp, color = DarkRed)
+                        fontSize = TextFS, color = DarkRed)
                     BasicTextField(
                         value = outputExpression.value,
                         onValueChange = {
@@ -77,10 +82,10 @@ class OutputBlock(var variableName: String = "") {
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightRed, RoundedCornerShape(percent = 10))
+                                    .background(LightRed, RoundedCornerShape(percent = RoundingSize))
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 150.dp)
-                                    .height(50.dp)
+                                    .height(TextFieldHeight)
                                     .wrapContentHeight()
                             ){
                                 Box(
@@ -93,7 +98,7 @@ class OutputBlock(var variableName: String = "") {
                         },
                         cursorBrush = SolidColor(Unspecified),
                         textStyle = TextStyle(
-                            fontSize = 25.sp,
+                            fontSize = TextFieldFS,
                             fontWeight = FontWeight.Bold,
                             color = DarkRed,
                             textAlign = TextAlign.Center
@@ -103,15 +108,10 @@ class OutputBlock(var variableName: String = "") {
                     Button(
                         onClick = {
                             blocks.remove(blocks.find { it.id == index })
-                            println()
-                            blocks.forEach{
-                                print(it.id)
-                                print(' ')
-                            }
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = DarkRed, contentColor = Red)
                     ) {

@@ -59,14 +59,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ComposeBlock
 import com.example.mobile.ui.theme.Brown
+import com.example.mobile.ui.theme.ButtonSize
 import com.example.mobile.ui.theme.DarkBlue
 import com.example.mobile.ui.theme.DarkBrown
 import com.example.mobile.ui.theme.DarkOrange
+import com.example.mobile.ui.theme.Elevetaion
 import com.example.mobile.ui.theme.LightBlue
 import com.example.mobile.ui.theme.LightBrown
 import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import java.util.UUID
 
 class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<ComposeBlock>) {
@@ -80,9 +86,9 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                 .padding(vertical = 10.dp, horizontal = 20.dp)
                 .height(70.dp)
                 .wrapContentWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(RoundingSize.dp),
             colors = CardDefaults.cardColors(containerColor = Brown),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
         ) {
             Box(modifier = Modifier
                 .fillMaxHeight(),
@@ -95,7 +101,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                     Text(
                         text = "ARR", fontFamily = SFDistangGalaxy, modifier = Modifier
                             .padding(horizontal = 10.dp),
-                        fontSize = 30.sp, color = DarkBrown
+                        fontSize = TextFS, color = DarkBrown
                     )
                     BasicTextField(
                         value = arrayName.value,
@@ -107,10 +113,10 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightBrown, RoundedCornerShape(percent = 10))
+                                    .background(LightBrown, RoundedCornerShape(percent = RoundingSize))
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 50.dp)
-                                    .height(50.dp)
+                                    .height(TextFieldHeight)
                                     .wrapContentHeight(),
                             ){
                                 Box(
@@ -122,8 +128,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                             }
                         },
                         cursorBrush = SolidColor(Color.Transparent),
-                        //, textAlign = TextAlign.Center
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkBrown),
+                        textStyle = TextStyle(fontSize = TextFieldFS, fontWeight = FontWeight.Bold, color = DarkBrown),
                         singleLine = true
                     )
                     Text(
@@ -162,7 +167,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
                     ) {
@@ -177,7 +182,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
                     ) {
@@ -189,7 +194,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
                     ) {
@@ -225,18 +230,13 @@ fun ArrayVariable(index: UUID){
             value = variableValue.value,
             onValueChange = {
                 variableValue.value = it
-                //value = it
-                //variableValue.value = value
-                //setVariable(index, GetData())
             },
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
-                        .background(LightBrown, RoundedCornerShape(percent = 10))
-                        //.width(IntrinsicSize.Min)
-                        ///.defaultMinSize(minWidth = 80.dp)
+                        .background(LightBrown, RoundedCornerShape(percent = RoundingSize))
                         .width(50.dp)
-                        .height(50.dp),
+                        .height(TextFieldHeight),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
@@ -249,7 +249,7 @@ fun ArrayVariable(index: UUID){
             },
             cursorBrush = SolidColor(Color.Unspecified),
             textStyle = TextStyle(
-                fontSize = 25.sp,
+                fontSize = TextFieldFS,
                 fontWeight = FontWeight.Bold,
                 color = DarkBrown,
                 textAlign = TextAlign.Center

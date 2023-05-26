@@ -51,7 +51,13 @@ import com.example.mobile.ui.theme.LightBlue
 import com.example.mobile.ui.theme.Orange
 import com.example.mobile.ui.theme.Red
 import com.example.mobile.ui.theme.Blue
+import com.example.mobile.ui.theme.ButtonSize
+import com.example.mobile.ui.theme.Elevetaion
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import java.util.UUID
 
@@ -68,7 +74,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Blue, RoundedCornerShape(10.dp))
+            .background(Blue, RoundedCornerShape(RoundingSize.dp))
             .fillMaxWidth()
         ){
             Column(
@@ -79,9 +85,9 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(RoundingSize.dp),
                     colors = CardDefaults.cardColors(containerColor = Blue),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
                 ) {
                     Box(
                         modifier = Modifier
@@ -98,7 +104,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                             Text(
                                 text = "FOR", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkBlue
+                                fontSize = TextFS, color = DarkBlue
                             )
                             Box(
                                 modifier = Modifier
@@ -116,18 +122,18 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                             modifier = Modifier
                                                 .background(
                                                     LightBlue,
-                                                    RoundedCornerShape(percent = 10)
+                                                    RoundedCornerShape(percent = RoundingSize)
                                                 )
                                                 .width(IntrinsicSize.Min)
                                                 .defaultMinSize(minWidth = 70.dp)
-                                                .height(50.dp)
+                                                .height(TextFieldHeight)
                                                 .wrapContentHeight()
                                         ) {
                                             innerTextField()
                                         }
                                     },
                                     textStyle = TextStyle(
-                                        fontSize = 25.sp,
+                                        fontSize = TextFieldFS,
                                         fontWeight = FontWeight.Bold,
                                         color = DarkBlue,
                                         textAlign = TextAlign.Center
@@ -152,18 +158,18 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                             modifier = Modifier
                                                 .background(
                                                     LightBlue,
-                                                    RoundedCornerShape(percent = 10)
+                                                    RoundedCornerShape(percent = RoundingSize)
                                                 )
                                                 .width(IntrinsicSize.Min)
                                                 .defaultMinSize(minWidth = 70.dp)
-                                                .height(50.dp)
+                                                .height(TextFieldHeight)
                                                 .wrapContentHeight()
                                         ) {
                                             innerTextField()
                                         }
                                     },
                                     textStyle = TextStyle(
-                                        fontSize = 25.sp,
+                                        fontSize = TextFieldFS,
                                         fontWeight = FontWeight.Bold,
                                         color = DarkBlue,
                                         textAlign = TextAlign.Center
@@ -188,18 +194,18 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                             modifier = Modifier
                                                 .background(
                                                     LightBlue,
-                                                    RoundedCornerShape(percent = 10)
+                                                    RoundedCornerShape(percent = RoundingSize)
                                                 )
                                                 .width(IntrinsicSize.Min)
                                                 .defaultMinSize(minWidth = 70.dp)
-                                                .height(50.dp)
+                                                .height(TextFieldHeight)
                                                 .wrapContentHeight()
                                         ) {
                                             innerTextField()
                                         }
                                     },
                                     textStyle = TextStyle(
-                                        fontSize = 25.sp,
+                                        fontSize = TextFieldFS,
                                         fontWeight = FontWeight.Bold,
                                         color = DarkBlue,
                                         textAlign = TextAlign.Center
@@ -214,7 +220,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
-                                    .size(30.dp),
+                                    .size(ButtonSize),
                                 contentPadding = PaddingValues(5.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = DarkBlue,
@@ -290,7 +296,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = DarkBlue,

@@ -45,11 +45,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ui.theme.Blue
+import com.example.mobile.ui.theme.ButtonSize
 import com.example.mobile.ui.theme.DarkBlue
 import com.example.mobile.ui.theme.Green
 import com.example.mobile.ui.theme.DarkGreen
+import com.example.mobile.ui.theme.Elevetaion
 import com.example.mobile.ui.theme.LightGreen
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import java.util.UUID
 
@@ -65,7 +71,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Green, RoundedCornerShape(10.dp))
+            .background(Green, RoundedCornerShape(RoundingSize.dp))
             .fillMaxWidth()
         ){
             Column(
@@ -75,9 +81,9 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(RoundingSize.dp),
                     colors = CardDefaults.cardColors(containerColor = Green),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
                 ) {
                     Box(
                         modifier = Modifier
@@ -94,7 +100,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                             Text(
                                 text = "IF", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkGreen
+                                fontSize = TextFS, color = DarkGreen
                             )
                             BasicTextField(
                                 value = whileCondition.value,
@@ -108,18 +114,18 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                                         modifier = Modifier
                                             .background(
                                                 LightGreen,
-                                                RoundedCornerShape(percent = 10)
+                                                RoundedCornerShape(percent = RoundingSize)
                                             )
                                             .width(IntrinsicSize.Min)
                                             .defaultMinSize(minWidth = 150.dp)
-                                            .height(50.dp)
+                                            .height(TextFieldHeight)
                                             .wrapContentHeight()
                                     ) {
                                         innerTextField()
                                     }
                                 },
                                 textStyle = TextStyle(
-                                    fontSize = 25.sp,
+                                    fontSize = TextFieldFS,
                                     fontWeight = FontWeight.Bold,
                                     color = DarkGreen,
                                     textAlign = TextAlign.Center
@@ -133,7 +139,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
-                                    .size(30.dp),
+                                    .size(ButtonSize),
                                 contentPadding = PaddingValues(5.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = DarkGreen,
@@ -154,9 +160,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            //.padding(top = 5.dp)
                             .background(LightGreen)
-                            //.align(Alignment.Center)
                     ) {
                         ifBlocks.forEach(){
                             it.compose()
@@ -178,7 +182,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     },
                     modifier = Modifier
                         .padding(vertical = 5.dp, horizontal = 10.dp)
-                        .size(30.dp),
+                        .size(ButtonSize),
                     contentPadding = PaddingValues(5.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = DarkGreen,
@@ -190,7 +194,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(RoundingSize.dp),
                     colors = CardDefaults.cardColors(containerColor = Green),
                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
                 ) {
@@ -209,7 +213,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                             Text(
                                 text = "ELSE", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkGreen
+                                fontSize = TextFS, color = DarkGreen
                             )
                         }
                     }
@@ -249,7 +253,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                             },
                             modifier = Modifier
                                 .padding(vertical = 5.dp, horizontal = 10.dp)
-                                .size(30.dp)
+                                .size(ButtonSize)
                                 .align(Alignment.CenterStart),
                             contentPadding = PaddingValues(5.dp),
                             colors = ButtonDefaults.buttonColors(
@@ -266,7 +270,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = DarkGreen,

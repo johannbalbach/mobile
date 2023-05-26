@@ -47,7 +47,13 @@ import androidx.compose.ui.unit.sp
 import com.example.mobile.ui.theme.DarkBlue
 import com.example.mobile.ui.theme.LightBlue
 import com.example.mobile.ui.theme.Blue
+import com.example.mobile.ui.theme.ButtonSize
+import com.example.mobile.ui.theme.Elevetaion
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
 import java.util.UUID
 
 class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<ComposeBlock>) {
@@ -61,7 +67,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
-            .background(Blue, RoundedCornerShape(10.dp))
+            .background(Blue, RoundedCornerShape(RoundingSize.dp))
             .fillMaxWidth()
         ) {
             Column(
@@ -72,9 +78,9 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp),
+                    shape = RoundedCornerShape(RoundingSize.dp),
                     colors = CardDefaults.cardColors(containerColor = Blue),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
                 ) {
                     Box(
                         modifier = Modifier
@@ -91,7 +97,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                             Text(
                                 text = "WHILE", fontFamily = SFDistangGalaxy, modifier = Modifier
                                     .padding(horizontal = 10.dp),
-                                fontSize = 30.sp, color = DarkBlue
+                                fontSize = TextFS, color = DarkBlue
                             )
                             BasicTextField(
                                 value = whileCondition.value,
@@ -109,14 +115,14 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                                             )
                                             .width(IntrinsicSize.Min)
                                             .defaultMinSize(minWidth = 150.dp)
-                                            .height(50.dp)
+                                            .height(TextFieldHeight)
                                             .wrapContentHeight()
                                     ) {
                                         innerTextField()
                                     }
                                 },
                                 textStyle = TextStyle(
-                                    fontSize = 25.sp,
+                                    fontSize = TextFieldFS,
                                     fontWeight = FontWeight.Bold,
                                     color = DarkBlue,
                                     textAlign = TextAlign.Center
@@ -130,7 +136,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 10.dp)
-                                    .size(30.dp),
+                                    .size(ButtonSize),
                                 contentPadding = PaddingValues(5.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = DarkBlue,
