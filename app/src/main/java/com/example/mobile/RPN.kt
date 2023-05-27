@@ -16,7 +16,7 @@ class RPN() {
         "||" to 2, '<' to 3, '>' to 3, ">=" to 3, "<=" to 3, "!=" to 3, "==" to 3, '!' to 4, '+' to 5, '-' to 5, '*' to 6,
         '/' to 6, '^' to 7, '~' to 8, '.' to 9
     )
-    private val equalchecker = mapOf('<' to 0, '>' to 0, '!' to 0)
+    private val equalchecker = mapOf('<' to 0, '>' to 0, '!' to 0, '=' to 0)
     private val postfixpasser = mapOf('?' to 0, ':' to 0, '}' to 0, '{' to 0, '@' to 0, '[' to 0, ']' to 0)
 
     private fun getFullString(inputExpr: String, inputPos: Int, isDigit: Boolean): Pair<String, Int> {

@@ -244,12 +244,13 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                                 val id = UUID.randomUUID()
                                 blocksData.put(id, "")
                                 val variable = VariableBlock()
-                                blocksInElse.add(ComposeBlock(id, {
+                                elseBlocks.add(ComposeBlock(id, {
                                     variable.Variable(
                                         index = id,
-                                        blocks = blocksInElse
+                                        blocks = elseBlocks
                                     )
                                 }, "variable", { setVariable(id, variable.GetData()) }))
+                                setVariable(index, GetData())
                             },
                             modifier = Modifier
                                 .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -266,7 +267,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     }
                     Button(
                         onClick = {
-                            GetData()
+                            setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)

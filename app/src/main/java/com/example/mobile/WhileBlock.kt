@@ -169,24 +169,25 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                         onClick = {
                             val id = UUID.randomUUID()
                             blocksData.put(id, "")
-                            if (blocksInWhile.size % 4 != 0) {
+                            if (whileBlocks.size % 4 != 0) {
                                 val variable = VariableBlock()
-                                blocksInWhile.add(ComposeBlock(id, {
+                                whileBlocks.add(ComposeBlock(id, {
                                     variable.Variable(
                                         index = id,
-                                        blocks = blocksInWhile
+                                        blocks = whileBlocks
                                     )
                                 }, "variable", { setVariable(id, variable.GetData()) }))
                             } else {
                                 val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocksInWhile.add(
+                                whileBlocks.add(
                                     ComposeBlock(
                                         id,
-                                        { forBlock.For(id, blocksInWhile) },
+                                        { forBlock.For(id, whileBlocks) },
                                         "for",
                                         { setVariable(id, forBlock.GetData()) })
                                 )
                             }
+                            setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -201,7 +202,7 @@ class WhileBlock(var condition: String = "", var whileBlocks: SnapshotStateList<
                     }
                     Button(
                         onClick = {
-                            GetData()
+                            setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(vertical = 5.dp, horizontal = 10.dp)
