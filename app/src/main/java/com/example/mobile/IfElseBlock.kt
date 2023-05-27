@@ -91,7 +91,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
         val bottomSheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded
         )
-        var key = mutableStateOf(true)
+        val flag = remember { mutableStateOf(true) }
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
         val selectedBlock = remember { mutableStateOf<ComposeBlock?>(null) }
         val uuidArray = Array(6) { UUID.randomUUID() }
@@ -212,7 +212,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                 }
                 Button(
                     onClick = {
-                        key.value = true
+                        flag.value = true
                         openBottomSheet = true
                         setVariable(index, GetData())
                     },
@@ -277,7 +277,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     Box() {
                         Button(
                             onClick = {
-                                key.value = false
+                                flag.value = false
                                 openBottomSheet = true
                                 setVariable(index, GetData())
                             },
@@ -332,8 +332,7 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                                 })
                         ) {
                             if (selectedBlock.value == block) {
-                                println(key.value)
-                                if(key.value) {
+                                if(flag.value) {
                                     AddBlock(ifBlocks, block)
                                 }
                                 else {
@@ -359,6 +358,14 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
             sb.append('(').append(condition).append(")?{(").append(ifContent).append(")}:{(").append(elseContent).append(")}")
         }
         return sb.toString()
+    }
+
+    fun trueCondition(): Boolean {
+        return true
+    }
+
+    fun falseCondition(): Boolean {
+        return false
     }
 }
 

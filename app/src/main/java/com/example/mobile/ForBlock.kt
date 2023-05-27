@@ -83,12 +83,12 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
         val forVariable = rememberSaveable(index) { mutableStateOf(this.variableName) }
         val forCondition = rememberSaveable(index) { mutableStateOf(this.variableName) }
         val forIteration = rememberSaveable(index) { mutableStateOf(this.variableName) }
+
         val skipPartiallyExpanded by remember { mutableStateOf(false) }
         val bottomSheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded
         )
         var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-        val scope = rememberCoroutineScope()
         val selectedBlock = remember { mutableStateOf<ComposeBlock?>(null) }
         val uuidArray = Array(6) { UUID.randomUUID() }
         val blocksList = mutableStateListOf(
@@ -293,20 +293,7 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                     Box() {
                         Button(
                             onClick = {
-                                val id = UUID.randomUUID()
-                                blocksData.put(id, "")
-                                if(forBlocks.size % 4 == 0) {
-                                    val variable = VariableBlock()
-                                    forBlocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = forBlocks) }, "variable",{setVariable(id, variable.GetData())}))
-                                }
-                                else if (forBlocks.size % 4 == 1){
-                                    val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                    forBlocks.add(ComposeBlock(id, { ifElseBlock.IfElse(id, forBlocks) }, "for",{setVariable(id, ifElseBlock.GetData())}))
-                                }
-                                else {
-                                    val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                    forBlocks.add(ComposeBlock(id, { forBlock.For(id, forBlocks) }, "for",{setVariable(id, forBlock.GetData())}))
-                                }
+                                openBottomSheet = true
                                 setVariable(index, GetData())
                             },
                             modifier = Modifier
@@ -356,8 +343,8 @@ class ForBlock(var variableName: String = "", var condition: String = "", var it
                                 })
                         ) {
                             if (selectedBlock.value == block) {
-                                scope.launch { bottomSheetState.hide() }
                                 AddBlock(forBlocks, block)
+                                openBottomSheet = false
                             }
                             block.compose()
                         }
