@@ -101,7 +101,7 @@ val statusField = CompilationStatus("Waiting For Code")
 
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
-    "SuspiciousIndentation"
+    "SuspiciousIndentation", "UnrememberedMutableState"
 )
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -111,189 +111,8 @@ fun ListOfBlocks(
     val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
     val mutableConsoleValue = remember { mutableStateOf(false) }
-    val mutableMenuValue = remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
-    Scaffold(
-        topBar = {
-            Column {
-                TopAppBar(
-                    title = {
-                        PlainTooltipBox(
-                            tooltip = { Text(currentState.value) }
-                        ) {
-                            Text(
-                                text = currentState.value,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = Nunito,
-                                fontSize = 21.sp,
-                                modifier = Modifier
-                                    .padding(start = 0.dp)
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = { /* doSomething() */ },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Menu,
-                                contentDescription = null,
-                            )
-                        }
-                    },
-                    actions = {
-                        FilledTonalButton(
-                            onClick = { /* doSomething() */ },
-                            modifier = Modifier
-                                .height(36.dp)
-                                .width(112.dp)
-                                .padding(end = 6.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,
-                                contentColor = MaterialTheme.colorScheme.onSecondary
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.LibraryAdd,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
-                            )
-                            Text(
-                                text = "New",
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = Nunito,
-                                modifier = Modifier.padding(start = 6.dp)
-                            )
-                        }
-                    },
-                    colors = topAppBarColors(
-                        titleContentColor = MaterialTheme.colorScheme.onSurface,
-                        containerColor = MaterialTheme.colorScheme.surface
-                    )
-                )
-            }
-        },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.height(64.dp),
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                containerColor = MaterialTheme.colorScheme.surface
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FloatingActionButton(
-                        onClick = {
-                            BuildProject()
-                            mutableConsoleValue.value = true
-                        },
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 12.dp)
-                            .size(40.dp),
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                        shape = RoundedCornerShape(16.dp),
-                        elevation = FloatingActionButtonDefaults.elevation(3.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.PlayArrow,
-                            contentDescription = null,
-                        )
-                    }
-                    statusField.Status()
-                }
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = { /* doSomething() */ },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Settings,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    IconButton(
-                        onClick = onToggleTheme,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.WbSunny,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = { mutableMenuValue.value = true },
-                        shape = RoundedCornerShape(16.dp),
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                        modifier = Modifier.size(40.dp),
-                        elevation = FloatingActionButtonDefaults.elevation(3.dp)
-                    ) {
-                        Icon(Icons.Filled.Add, "Localized description")
-                    }
-                }
-            }
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 70.dp, bottom = 70.dp)
-        ) {
-            val state = rememberReorderableLazyListState(onMove = { from, to ->
-                blocks.add(to.index, blocks.removeAt(from.index))
-            })
-            CompositionLocalProvider(
-                LocalOverscrollConfiguration provides null
-            ) {
-                val horizontalState = rememberScrollState()
-                LazyColumn(
-                    state = state.listState,
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .fillMaxSize()
-                        .horizontalScroll(horizontalState)
-                        .reorderable(state)
-                        .detectReorderAfterLongPress(state)
-                ) {
-                    items(items = blocks, key = { it.id }) { block ->
-                        ReorderableItem(state, key = block.id) { isDragging ->
-                            val animateScale by animateFloatAsState(if (isDragging) DragScale else 1f)
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .scale(scale = animateScale)
-                            ) {
-                                block.compose()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        console.ConsoleBottomSheet(mutableConsoleValue)
-    }
-
-    Box(
-        modifier = Modifier
-            .padding(top = 70.dp, bottom = 70.dp)
-    ) {
-        BlocksMenu(blocks, mutableMenuValue, drawerState, scope)
-    }
-}
-
-@SuppressLint("UnrememberedMutableState", "CoroutineCreationDuringComposition")
-@Composable
-fun BlocksMenu(blocks: MutableList<ComposeBlock>, mutableValue: MutableState<Boolean>, state: DrawerState, scope: CoroutineScope) {
     val uuidArray = Array(6) { UUID.randomUUID() }
     val blocksList = mutableStateListOf(
         ComposeBlock(uuidArray[0], { IfElseBlock("", mutableStateListOf(), mutableStateListOf()).IfElse(index = uuidArray[0], blocks = blocks) }, "ifElse", {setVariable(
@@ -312,59 +131,230 @@ fun BlocksMenu(blocks: MutableList<ComposeBlock>, mutableValue: MutableState<Boo
             ForBlock("", "", "", mutableStateListOf()).GetData())})
     )
 
-    scope.launch { state.open() }
-    if (mutableValue.value) {
-        ModalNavigationDrawer(
-            drawerState = state,
-            drawerContent = {
-                val horizontalState = rememberScrollState()
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .horizontalScroll(horizontalState)
-                ) {
-                    items(blocksList) { block ->
-                        Box(
-                            modifier = Modifier.clickable(onClick = {
-                                val id = UUID.randomUUID()
-                                blocksData.put(id, "")
-                                if (block.blockType == "ifElse") {
-                                    val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                    blocks.add(ComposeBlock(id, { ifElseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifElseBlock.GetData())}))
-                                    statusField.newStatus("^ↀᴥↀ^")
-                                } else if (block.blockType == "output") {
-                                    val output = OutputBlock()
-                                    blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
-                                    statusField.newStatus("ฅ•ω•ฅ")
-                                } else if (block.blockType == "while") {
-                                    val whileBlock = WhileBlock("", mutableStateListOf())
-                                    blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
-                                    statusField.newStatus("(=^･ｪ･^=)")
-                                } else if (block.blockType == "array") {
-                                    val arrayBlock = ArrayBlock("", mutableStateListOf())
-                                    blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", { setVariable(id, arrayBlock.GetData()) }))
-                                    statusField.newStatus("(=｀ェ´=)")
-                                } else if (block.blockType == "variable") {
-                                    val variableBlock = VariableBlock("","")
-                                    blocks.add(ComposeBlock(id, { variableBlock.Variable(id, blocks) }, "variable", { setVariable(id, variableBlock.GetData()) }))
-                                    statusField.newStatus("(=^-ω-^=)")
-                                } else {
-                                    val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                    blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
-                                    statusField.newStatus("(ฅ'ω'ฅ)")
-                                }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            val horizontalState = rememberScrollState()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .horizontalScroll(horizontalState)
+                    .padding(top = 70.dp, bottom = 70.dp),
+            ) {
+                items(blocksList) { block ->
+                    Box(
+                        modifier = Modifier.clickable(
+                            onClick = {
+                            val id = UUID.randomUUID()
+                            blocksData.put(id, "")
+                            if (block.blockType == "ifElse") {
+                                val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { ifElseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifElseBlock.GetData())}))
+                                statusField.newStatus("^ↀᴥↀ^")
+                            } else if (block.blockType == "output") {
+                                val output = OutputBlock()
+                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
+                                statusField.newStatus("ฅ•ω•ฅ")
+                            } else if (block.blockType == "while") {
+                                val whileBlock = WhileBlock("", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
+                                statusField.newStatus("(=^･ｪ･^=)")
+                            } else if (block.blockType == "array") {
+                                val arrayBlock = ArrayBlock("", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", { setVariable(id, arrayBlock.GetData()) }))
+                                statusField.newStatus("(=｀ェ´=)")
+                            } else if (block.blockType == "variable") {
+                                val variableBlock = VariableBlock("","")
+                                blocks.add(ComposeBlock(id, { variableBlock.Variable(id, blocks) }, "variable", { setVariable(id, variableBlock.GetData()) }))
+                                statusField.newStatus("(=^-ω-^=)")
+                            } else {
+                                val forBlock = ForBlock("", "", "", mutableStateListOf())
+                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
+                                statusField.newStatus("(ฅ'ω'ฅ)")
+                            }
 
-                                scope.cancel()
-                                mutableValue.value = false
-                            })
+                            scope.launch { drawerState.close() }
+                        })
+                    ) {
+                        block.compose()
+                    }
+                }
+            }
+        },
+    ) {
+        Scaffold(
+            topBar = {
+                Column {
+                    TopAppBar(
+                        title = {
+                            PlainTooltipBox(
+                                tooltip = { Text(currentState.value) }
+                            ) {
+                                Text(
+                                    text = currentState.value,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = Nunito,
+                                    fontSize = 21.sp,
+                                    modifier = Modifier
+                                        .padding(start = 0.dp)
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { /* doSomething() */ },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Menu,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        actions = {
+                            FilledTonalButton(
+                                onClick = { /* doSomething() */ },
+                                modifier = Modifier
+                                    .height(36.dp)
+                                    .width(112.dp)
+                                    .padding(end = 6.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                    contentColor = MaterialTheme.colorScheme.onSecondary
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.LibraryAdd,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = "New",
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = Nunito,
+                                    modifier = Modifier.padding(start = 6.dp)
+                                )
+                            }
+                        },
+                        colors = topAppBarColors(
+                            titleContentColor = MaterialTheme.colorScheme.onSurface,
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
+                    )
+                }
+            },
+            bottomBar = {
+                BottomAppBar(
+                    modifier = Modifier.height(64.dp),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surface
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                BuildProject()
+                                mutableConsoleValue.value = true
+                            },
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 12.dp)
+                                .size(40.dp),
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = FloatingActionButtonDefaults.elevation(3.dp)
                         ) {
-                            block.compose()
+                            Icon(
+                                imageVector = Icons.Rounded.PlayArrow,
+                                contentDescription = null,
+                            )
+                        }
+                        statusField.Status()
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { /* doSomething() */ },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Settings,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = onToggleTheme,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.WbSunny,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        FloatingActionButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerState.apply {
+                                        if (isClosed) open() else close()
+                                    }
+                                }
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            modifier = Modifier.size(40.dp),
+                            elevation = FloatingActionButtonDefaults.elevation(3.dp)
+                        ) {
+                            Icon(Icons.Filled.Add, "Localized description")
                         }
                     }
                 }
-            },
-            content = {  }
-        )
+            }
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 70.dp, bottom = 70.dp)
+            ) {
+                val state = rememberReorderableLazyListState(onMove = { from, to ->
+                    blocks.add(to.index, blocks.removeAt(from.index))
+                })
+                CompositionLocalProvider(
+                    LocalOverscrollConfiguration provides null
+                ) {
+                    val horizontalState = rememberScrollState()
+                    LazyColumn(
+                        state = state.listState,
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .fillMaxSize()
+                            .horizontalScroll(horizontalState)
+                            .reorderable(state)
+                            .detectReorderAfterLongPress(state)
+                    ) {
+                        items(items = blocks, key = { it.id }) { block ->
+                            ReorderableItem(state, key = block.id) { isDragging ->
+                                val animateScale by animateFloatAsState(if (isDragging) DragScale else 1f)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .scale(scale = animateScale)
+                                ) {
+                                    block.compose()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            console.ConsoleBottomSheet(mutableConsoleValue)
+        }
     }
 }
 
