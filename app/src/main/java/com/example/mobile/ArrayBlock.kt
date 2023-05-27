@@ -59,43 +59,82 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ComposeBlock
 import com.example.mobile.ui.theme.Brown
+import com.example.mobile.ui.theme.ButtonSize
 import com.example.mobile.ui.theme.DarkBlue
 import com.example.mobile.ui.theme.DarkBrown
 import com.example.mobile.ui.theme.DarkOrange
+import com.example.mobile.ui.theme.Elevetaion
 import com.example.mobile.ui.theme.LightBlue
 import com.example.mobile.ui.theme.LightBrown
 import com.example.mobile.ui.theme.LightOrange
 import com.example.mobile.ui.theme.Orange
+import com.example.mobile.ui.theme.RoundingSize
 import com.example.mobile.ui.theme.SFDistangGalaxy
+import com.example.mobile.ui.theme.TextFS
+import com.example.mobile.ui.theme.TextFieldFS
+import com.example.mobile.ui.theme.TextFieldHeight
+import java.util.Hashtable
 import java.util.UUID
 
 class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<ComposeBlock>) {
+    private val members = Hashtable<UUID, String>()
+    private var ID = UUID.randomUUID()
+    fun setMember(id: UUID, value: String): Unit {
+        if (members.contains(id)) {
+            members.replace(id, value)
+        } else
+            members.put(id, value)
+    }
+
+    fun stringMember(nameA: String, memberV: String): String {
+        val sb = StringBuilder()
+        sb.append('(').append(nameA).append("#(").append(memberV).append("))")
+        return sb.toString()
+    }
+
+    fun GetData(): String {
+        val sb = StringBuilder()
+        sb.append("(")
+        var i = 0
+        while (i < arrayBlocks.size) {
+            if (members.containsKey(arrayBlocks[i].id)) {
+                sb.append(stringMember(name, members.getValue(arrayBlocks[i].id)))
+            }
+            i++
+        }
+        sb.append(")")
+        return sb.toString()
+    }
+
     @Composable
-    fun Array(index: UUID, blocks: MutableList<ComposeBlock>){
+    fun Array(index: UUID, blocks: MutableList<ComposeBlock>) {
         val arrayName = rememberSaveable(index) { mutableStateOf(this.name) }
         val arrayVariables = remember { arrayBlocks }
-
+        ID = index
         Card(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 20.dp)
                 .height(70.dp)
                 .wrapContentWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(RoundingSize.dp),
             colors = CardDefaults.cardColors(containerColor = Brown),
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = Elevetaion),
         ) {
-            Box(modifier = Modifier
-                .fillMaxHeight(),
-                contentAlignment = Alignment.Center){
-                Row(modifier = Modifier
-                    .padding(horizontal = 10.dp),
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "ARR", fontFamily = SFDistangGalaxy, modifier = Modifier
                             .padding(horizontal = 10.dp),
-                        fontSize = 30.sp, color = DarkBrown
+                        fontSize = TextFS, color = DarkBrown
                     )
                     BasicTextField(
                         value = arrayName.value,
@@ -107,12 +146,15 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         decorationBox = { innerTextField ->
                             Box(
                                 modifier = Modifier
-                                    .background(LightBrown, RoundedCornerShape(percent = 10))
+                                    .background(
+                                        LightBrown,
+                                        RoundedCornerShape(percent = RoundingSize)
+                                    )
                                     .width(IntrinsicSize.Min)
                                     .defaultMinSize(minWidth = 50.dp)
-                                    .height(50.dp)
+                                    .height(TextFieldHeight)
                                     .wrapContentHeight(),
-                            ){
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .padding(horizontal = 15.dp)
@@ -122,8 +164,11 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                             }
                         },
                         cursorBrush = SolidColor(Color.Transparent),
-                        //, textAlign = TextAlign.Center
-                        textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold, color = DarkBrown),
+                        textStyle = TextStyle(
+                            fontSize = TextFieldFS,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkBrown
+                        ),
                         singleLine = true
                     )
                     Text(
@@ -142,7 +187,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                                 .fillMaxSize()
                                 .background(LightBrown)
                         ) {
-                            arrayVariables.forEach() {
+                            arrayBlocks.forEach() {
                                 it.compose()
                             }
                         }
@@ -155,33 +200,43 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                     Button(
                         onClick = {
                             val id = UUID.randomUUID()
-                            blocksData.put(id, "")
-                            val variable = VariableBlock()
-                            arrayVariables.add(ComposeBlock(id, { ArrayVariable(index = id) }, "variable", {setVariable(id, variable.GetData())}))
+                            members.put(id, "")
+                            arrayBlocks.add(
+                                ComposeBlock(
+                                    id,
+                                    { ArrayVariable(index = id) },
+                                    "arrayVariable",
+                                    {})
+                            )
                             setVariable(index, GetData())
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LightBrown,
+                            contentColor = Brown
+                        )
                     ) {
-                        Icon(Icons.Filled.Add,"")
+                        Icon(Icons.Filled.Add, "")
                     }
                     Button(
                         onClick = {
                             val id = UUID.randomUUID()
-                            val variable = VariableBlock()
-                            if(arrayVariables.size > 0)
-                                arrayVariables.removeLast()
+                            if (arrayBlocks.size > 0)
+                                arrayBlocks.removeLast()
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LightBrown,
+                            contentColor = Brown
+                        )
                     ) {
-                        Icon(Icons.Filled.Remove,"")
+                        Icon(Icons.Filled.Remove, "")
                     }
                     Button(
                         onClick = {
@@ -189,18 +244,18 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         },
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .size(30.dp),
+                            .size(ButtonSize),
                         contentPadding = PaddingValues(5.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = LightBrown, contentColor = Brown)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = LightBrown,
+                            contentColor = Brown
+                        )
                     ) {
-                        Icon(Icons.Filled.Close,"")
+                        Icon(Icons.Filled.Close, "")
                     }
                 }
             }
         }
-    }
-    fun GetData(): String {
-        return ""
     }
 
     private fun setVariable(name: UUID, value: String) {
@@ -209,52 +264,53 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
         } else
             blocksData.put(name, value)
     }
-}
 
-@Composable
-fun ArrayVariable(index: UUID){
-    val variableValue = rememberSaveable(index) { mutableStateOf("") }
-
-    Box(modifier = Modifier
-        .background(Brown)
-        .padding(horizontal = 5.dp)
-        .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        BasicTextField(
-            value = variableValue.value,
-            onValueChange = {
-                variableValue.value = it
-                //value = it
-                //variableValue.value = value
-                //setVariable(index, GetData())
-            },
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .background(LightBrown, RoundedCornerShape(percent = 10))
-                        //.width(IntrinsicSize.Min)
-                        ///.defaultMinSize(minWidth = 80.dp)
-                        .width(50.dp)
-                        .height(50.dp),
-                    contentAlignment = Alignment.Center
-                ) {
+    @Composable
+    fun ArrayVariable(index: UUID) {
+        val variableValue = rememberSaveable(index) { mutableStateOf("") }
+        Box(
+            modifier = Modifier
+                .background(Brown)
+                .padding(horizontal = 5.dp)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            BasicTextField(
+                value = variableValue.value,
+                onValueChange = {
+                    variableValue.value = it
+                    setMember(index, variableValue.value)
+                    setVariable(ID, GetData())
+                },
+                decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 5.dp)
+                            .background(LightBrown, RoundedCornerShape(percent = 10))
+                            //.width(IntrinsicSize.Min)
+                            ///.defaultMinSize(minWidth = 80.dp)
+                            .width(50.dp)
+                            .height(50.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        innerTextField()
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                        ) {
+                            innerTextField()
+                        }
                     }
-                }
-            },
-            cursorBrush = SolidColor(Color.Unspecified),
-            textStyle = TextStyle(
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-                color = DarkBrown,
-                textAlign = TextAlign.Center
-            ),
-            singleLine = true
-        )
+                },
+                cursorBrush = SolidColor(Color.Unspecified),
+                textStyle = TextStyle(
+                    fontSize = TextFieldFS,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkBrown,
+                    textAlign = TextAlign.Center
+                ),
+                singleLine = true
+            )
+        }
+
     }
 }
+
