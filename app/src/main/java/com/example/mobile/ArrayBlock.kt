@@ -178,13 +178,13 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                     )
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentHeight(),
+                            .padding(end = 5.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Row(
                             modifier = Modifier
-                                .fillMaxSize()
+                                //.fillMaxWidth()
+                                .width(IntrinsicSize.Max)
                                 .background(LightBrown)
                         ) {
                             arrayBlocks.forEach() {
@@ -272,7 +272,8 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
             modifier = Modifier
                 .background(Brown)
                 .padding(horizontal = 5.dp)
-                .fillMaxSize(),
+                //.fillMaxSize()
+                .width(50.dp),
             contentAlignment = Alignment.Center
         ) {
             BasicTextField(
@@ -287,7 +288,7 @@ class ArrayBlock(var name: String = "", var arrayBlocks: SnapshotStateList<Compo
                         modifier = Modifier
                             .background(LightBrown, RoundedCornerShape(percent = 10))
                             //.width(IntrinsicSize.Min)
-                            ///.defaultMinSize(minWidth = 80.dp)
+                            //.defaultMinSize(minWidth = 80.dp)
                             .width(50.dp)
                             .height(50.dp),
                         contentAlignment = Alignment.Center
