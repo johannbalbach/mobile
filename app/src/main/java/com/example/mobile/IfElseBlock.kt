@@ -1,7 +1,11 @@
 package com.example.mobile
 
 import android.annotation.SuppressLint
+import android.util.MutableBoolean
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +20,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -26,13 +34,23 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,18 +74,43 @@ import com.example.mobile.ui.theme.SFDistangGalaxy
 import com.example.mobile.ui.theme.TextFS
 import com.example.mobile.ui.theme.TextFieldFS
 import com.example.mobile.ui.theme.TextFieldHeight
+import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import java.util.UUID
 
 class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<ComposeBlock>, var elseBlocks: SnapshotStateList<ComposeBlock>) {
+    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
-        "SuspiciousIndentation"
+        "SuspiciousIndentation", "UnrememberedMutableState", "CoroutineCreationDuringComposition"
     )
     @Composable
     fun IfElse(index: UUID, blocks: MutableList<ComposeBlock>){
         val whileCondition = rememberSaveable(index) { mutableStateOf(this.condition) }
-        val blocksInIf = remember { ifBlocks }
-        val blocksInElse = remember { elseBlocks }
+
+        val skipPartiallyExpanded by remember { mutableStateOf(false) }
+        val bottomSheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = skipPartiallyExpanded
+        )
+        var key = mutableStateOf(true)
+        var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+        val selectedBlock = remember { mutableStateOf<ComposeBlock?>(null) }
+        val uuidArray = Array(6) { UUID.randomUUID() }
+        val blocksList = mutableStateListOf(
+            ComposeBlock(uuidArray[0], { IfElseBlock("", mutableStateListOf(), mutableStateListOf()).IfElse(index = uuidArray[0], blocks = blocks) }, "ifElse", {setVariable(
+                uuidArray[0],
+                IfElseBlock("", mutableStateListOf(), mutableStateListOf()).GetData())}),
+            ComposeBlock(uuidArray[1], { OutputBlock().Output(index = uuidArray[1], blocks = blocks) }, "output", {setVariable(
+                uuidArray[1], OutputBlock().GetData())}),
+            ComposeBlock(uuidArray[2], { WhileBlock("", mutableStateListOf()).While(uuidArray[2], blocks) }, "while", {setVariable(
+                uuidArray[2], WhileBlock("", mutableStateListOf()).GetData())}),
+            ComposeBlock(uuidArray[3], { ArrayBlock("", mutableStateListOf()).Array(uuidArray[3], blocks) }, "array", { setVariable(
+                uuidArray[3], ArrayBlock("", mutableStateListOf()).GetData()) }),
+            ComposeBlock(uuidArray[4], { VariableBlock().Variable(index = uuidArray[4], blocks = blocks) }, "variable", {setVariable(
+                uuidArray[4], VariableBlock().GetData())}),
+            ComposeBlock(uuidArray[5], { ForBlock("", "", "", mutableStateListOf()).For(uuidArray[5], blocks) }, "for", {setVariable(
+                uuidArray[5],
+                ForBlock("", "", "", mutableStateListOf()).GetData())})
+        )
 
         Box(modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 20.dp)
@@ -169,15 +212,8 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                 }
                 Button(
                     onClick = {
-                        val id = UUID.randomUUID()
-                        blocksData.put(id, "")
-                        val variable = VariableBlock()
-                        ifBlocks.add(ComposeBlock(id, {
-                            variable.Variable(
-                                index = id,
-                                blocks = ifBlocks
-                            )
-                        }, "variable", {setVariable(id, variable.GetData())}))
+                        key.value = true
+                        openBottomSheet = true
                         setVariable(index, GetData())
                     },
                     modifier = Modifier
@@ -241,15 +277,8 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                     Box() {
                         Button(
                             onClick = {
-                                val id = UUID.randomUUID()
-                                blocksData.put(id, "")
-                                val variable = VariableBlock()
-                                elseBlocks.add(ComposeBlock(id, {
-                                    variable.Variable(
-                                        index = id,
-                                        blocks = elseBlocks
-                                    )
-                                }, "variable", { setVariable(id, variable.GetData()) }))
+                                key.value = false
+                                openBottomSheet = true
                                 setVariable(index, GetData())
                             },
                             modifier = Modifier
@@ -279,6 +308,41 @@ class IfElseBlock(var condition: String = "", var ifBlocks: SnapshotStateList<Co
                         )
                     ) {
                         Icon(Icons.Filled.Done, "")
+                    }
+                }
+            }
+        }
+
+        if (openBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { openBottomSheet = false },
+                sheetState = bottomSheetState
+            ) {
+                val horizontalState = rememberScrollState()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .horizontalScroll(horizontalState)
+                ) {
+                    items(blocksList) { block ->
+                        Box(
+                            modifier = Modifier.clickable(
+                                onClick = {
+                                    selectedBlock.value = block
+                                })
+                        ) {
+                            if (selectedBlock.value == block) {
+                                println(key.value)
+                                if(key.value) {
+                                    AddBlock(ifBlocks, block)
+                                }
+                                else {
+                                    AddBlock(elseBlocks, block)
+                                }
+                                openBottomSheet = false
+                            }
+                            block.compose()
+                        }
                     }
                 }
             }

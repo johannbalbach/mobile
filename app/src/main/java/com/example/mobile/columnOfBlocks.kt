@@ -50,6 +50,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -64,6 +65,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -101,7 +104,7 @@ val statusField = CompilationStatus("Waiting For Code")
 
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "MutableCollectionMutableState",
-    "SuspiciousIndentation", "UnrememberedMutableState"
+    "SuspiciousIndentation", "UnrememberedMutableState", "CoroutineCreationDuringComposition"
 )
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -111,8 +114,10 @@ fun ListOfBlocks(
     val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
     val mutableConsoleValue = remember { mutableStateOf(false) }
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val selectedBlock = remember { mutableStateOf<ComposeBlock?>(null) }
     val uuidArray = Array(6) { UUID.randomUUID() }
     val blocksList = mutableStateListOf(
         ComposeBlock(uuidArray[0], { IfElseBlock("", mutableStateListOf(), mutableStateListOf()).IfElse(index = uuidArray[0], blocks = blocks) }, "ifElse", {setVariable(
@@ -145,37 +150,13 @@ fun ListOfBlocks(
                     Box(
                         modifier = Modifier.clickable(
                             onClick = {
-                            val id = UUID.randomUUID()
-                            blocksData.put(id, "")
-                            if (block.blockType == "ifElse") {
-                                val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { ifElseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifElseBlock.GetData())}))
-                                statusField.newStatus("^ↀᴥↀ^")
-                            } else if (block.blockType == "output") {
-                                val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
-                                statusField.newStatus("ฅ•ω•ฅ")
-                            } else if (block.blockType == "while") {
-                                val whileBlock = WhileBlock("", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
-                                statusField.newStatus("(=^･ｪ･^=)")
-                            } else if (block.blockType == "array") {
-                                val arrayBlock = ArrayBlock("", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", { setVariable(id, arrayBlock.GetData()) }))
-                                statusField.newStatus("(=｀ェ´=)")
-                            } else if (block.blockType == "variable") {
-                                val variableBlock = VariableBlock("","")
-                                blocks.add(ComposeBlock(id, { variableBlock.Variable(id, blocks) }, "variable", { setVariable(id, variableBlock.GetData()) }))
-                                statusField.newStatus("(=^-ω-^=)")
-                            } else {
-                                val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
-                                statusField.newStatus("(ฅ'ω'ฅ)")
-                            }
-
-                            scope.launch { drawerState.close() }
-                        })
+                                selectedBlock.value = block
+                            })
                     ) {
+                        if (selectedBlock.value == block) {
+                            scope.launch { drawerState.close() }
+                            AddBlock(blocks, block)
+                        }
                         block.compose()
                     }
                 }
@@ -299,11 +280,7 @@ fun ListOfBlocks(
                         }
                         FloatingActionButton(
                             onClick = {
-                                scope.launch {
-                                    drawerState.apply {
-                                        if (isClosed) open() else close()
-                                    }
-                                }
+                                scope.launch { drawerState.open() }
                             },
                             shape = RoundedCornerShape(16.dp),
                             containerColor = MaterialTheme.colorScheme.secondary,
@@ -355,6 +332,37 @@ fun ListOfBlocks(
             }
             console.ConsoleBottomSheet(mutableConsoleValue)
         }
+    }
+}
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun AddBlock(blocksList: SnapshotStateList<ComposeBlock>, block: ComposeBlock) {
+    val id = UUID.randomUUID()
+    blocksData.put(id, "")
+    if (block.blockType == "ifElse") {
+        val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+        blocksList.add(ComposeBlock(id, { ifElseBlock.IfElse(index = id, blocks = blocksList) }, "ifElse", {setVariable(id, ifElseBlock.GetData())}))
+        statusField.newStatus("^ↀᴥↀ^")
+    } else if (block.blockType == "output") {
+        val output = OutputBlock()
+        blocksList.add(ComposeBlock(id, { output.Output(index = id, blocks = blocksList) }, "output", {setVariable(id, output.GetData())}))
+        statusField.newStatus("ฅ•ω•ฅ")
+    } else if (block.blockType == "while") {
+        val whileBlock = WhileBlock("", mutableStateListOf())
+        blocksList.add(ComposeBlock(id, { whileBlock.While(id, blocksList) }, "while", {setVariable(id, whileBlock.GetData())}))
+        statusField.newStatus("(=^･ｪ･^=)")
+    } else if (block.blockType == "array") {
+        val arrayBlock = ArrayBlock("", mutableStateListOf())
+        blocksList.add(ComposeBlock(id, { arrayBlock.Array(id, blocksList) }, "array", { setVariable(id, arrayBlock.GetData()) }))
+        statusField.newStatus("(=｀ェ´=)")
+    } else if (block.blockType == "variable") {
+        val variableBlock = VariableBlock("","")
+        blocksList.add(ComposeBlock(id, { variableBlock.Variable(id, blocksList) }, "variable", { setVariable(id, variableBlock.GetData()) }))
+        statusField.newStatus("(=^-ω-^=)")
+    } else {
+        val forBlock = ForBlock("", "", "", mutableStateListOf())
+        blocksList.add(ComposeBlock(id, { forBlock.For(id, blocksList) }, "for", {setVariable(id, forBlock.GetData())}))
+        statusField.newStatus("(ฅ'ω'ฅ)")
     }
 }
 
