@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,10 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.WbCloudy
 import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
@@ -45,13 +49,16 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +76,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile.ui.theme.DragScale
 import com.example.mobile.ui.theme.Nunito
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -102,6 +111,8 @@ fun ListOfBlocks(
     val blocks = remember { AllBlocks }
     val currentState = remember { mutableStateOf("New file") }
     val mutableConsoleValue = remember { mutableStateOf(false) }
+    val mutableMenuValue = remember { mutableStateOf(false) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -220,41 +231,7 @@ fun ListOfBlocks(
                         )
                     }
                     FloatingActionButton(
-                        onClick = {
-                            val id = UUID.randomUUID()
-                            blocksData.put(id, "")
-                            if(blocks.size % 5 == 0) {
-                                //val variable = VariableBlock()
-                                //blocks.add(ComposeBlock(id, { variable.Variable(index = id, blocks = blocks) }, "variable", variable.GetData()))
-                                val ifelseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { ifelseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifelseBlock.GetData())}))
-                                statusField.newStatus("^ↀᴥↀ^")
-                            }
-                            else if(blocks.size % 5 == 1) {
-                                val output = OutputBlock()
-                                blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
-                                statusField.newStatus("ฅ•ω•ฅ")
-                            }
-                            else if(blocks.size % 5 == 2) {
-                                val whileBlock = WhileBlock("", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
-                                statusField.newStatus("(=^･ｪ･^=)")
-                            }
-                            else if(blocks.size % 5 == 3) {
-                                val arrayBlock = ArrayBlock("", mutableStateListOf())
-                                blocks.add(
-                                    ComposeBlock(
-                                        id,
-                                        { arrayBlock.Array(id, blocks) },
-                                        "array",
-                                        { setVariable(id, arrayBlock.GetData()) })
-                                )
-                            } else {
-                                val forBlock = ForBlock("", "", "", mutableStateListOf())
-                                blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
-                                statusField.newStatus("(ฅ'ω'ฅ)")
-                            }
-                        },
+                        onClick = { mutableMenuValue.value = true },
                         shape = RoundedCornerShape(16.dp),
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -304,6 +281,90 @@ fun ListOfBlocks(
             }
         }
         console.ConsoleBottomSheet(mutableConsoleValue)
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(top = 70.dp, bottom = 70.dp)
+    ) {
+        BlocksMenu(blocks, mutableMenuValue, drawerState, scope)
+    }
+}
+
+@SuppressLint("UnrememberedMutableState", "CoroutineCreationDuringComposition")
+@Composable
+fun BlocksMenu(blocks: MutableList<ComposeBlock>, mutableValue: MutableState<Boolean>, state: DrawerState, scope: CoroutineScope) {
+    val uuidArray = Array(6) { UUID.randomUUID() }
+    val blocksList = mutableStateListOf(
+        ComposeBlock(uuidArray[0], { IfElseBlock("", mutableStateListOf(), mutableStateListOf()).IfElse(index = uuidArray[0], blocks = blocks) }, "ifElse", {setVariable(
+            uuidArray[0],
+            IfElseBlock("", mutableStateListOf(), mutableStateListOf()).GetData())}),
+        ComposeBlock(uuidArray[1], { OutputBlock().Output(index = uuidArray[1], blocks = blocks) }, "output", {setVariable(
+            uuidArray[1], OutputBlock().GetData())}),
+        ComposeBlock(uuidArray[2], { WhileBlock("", mutableStateListOf()).While(uuidArray[2], blocks) }, "while", {setVariable(
+            uuidArray[2], WhileBlock("", mutableStateListOf()).GetData())}),
+        ComposeBlock(uuidArray[3], { ArrayBlock("", mutableStateListOf()).Array(uuidArray[3], blocks) }, "array", { setVariable(
+            uuidArray[3], ArrayBlock("", mutableStateListOf()).GetData()) }),
+        ComposeBlock(uuidArray[4], { VariableBlock().Variable(index = uuidArray[4], blocks = blocks) }, "variable", {setVariable(
+            uuidArray[4], VariableBlock().GetData())}),
+        ComposeBlock(uuidArray[5], { ForBlock("", "", "", mutableStateListOf()).For(uuidArray[5], blocks) }, "for", {setVariable(
+            uuidArray[5],
+            ForBlock("", "", "", mutableStateListOf()).GetData())})
+    )
+
+    scope.launch { state.open() }
+    if (mutableValue.value) {
+        ModalNavigationDrawer(
+            drawerState = state,
+            drawerContent = {
+                val horizontalState = rememberScrollState()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .horizontalScroll(horizontalState)
+                ) {
+                    items(blocksList) { block ->
+                        Box(
+                            modifier = Modifier.clickable(onClick = {
+                                val id = UUID.randomUUID()
+                                blocksData.put(id, "")
+                                if (block.blockType == "ifElse") {
+                                    val ifElseBlock = IfElseBlock("", mutableStateListOf(), mutableStateListOf())
+                                    blocks.add(ComposeBlock(id, { ifElseBlock.IfElse(index = id, blocks = blocks) }, "ifElse", {setVariable(id, ifElseBlock.GetData())}))
+                                    statusField.newStatus("^ↀᴥↀ^")
+                                } else if (block.blockType == "output") {
+                                    val output = OutputBlock()
+                                    blocks.add(ComposeBlock(id, { output.Output(index = id, blocks = blocks) }, "output", {setVariable(id, output.GetData())}))
+                                    statusField.newStatus("ฅ•ω•ฅ")
+                                } else if (block.blockType == "while") {
+                                    val whileBlock = WhileBlock("", mutableStateListOf())
+                                    blocks.add(ComposeBlock(id, { whileBlock.While(id, blocks) }, "while", {setVariable(id, whileBlock.GetData())}))
+                                    statusField.newStatus("(=^･ｪ･^=)")
+                                } else if (block.blockType == "array") {
+                                    val arrayBlock = ArrayBlock("", mutableStateListOf())
+                                    blocks.add(ComposeBlock(id, { arrayBlock.Array(id, blocks) }, "array", { setVariable(id, arrayBlock.GetData()) }))
+                                    statusField.newStatus("(=｀ェ´=)")
+                                } else if (block.blockType == "variable") {
+                                    val variableBlock = VariableBlock("","")
+                                    blocks.add(ComposeBlock(id, { variableBlock.Variable(id, blocks) }, "variable", { setVariable(id, variableBlock.GetData()) }))
+                                    statusField.newStatus("(=^-ω-^=)")
+                                } else {
+                                    val forBlock = ForBlock("", "", "", mutableStateListOf())
+                                    blocks.add(ComposeBlock(id, { forBlock.For(id, blocks) }, "for", {setVariable(id, forBlock.GetData())}))
+                                    statusField.newStatus("(ฅ'ω'ฅ)")
+                                }
+
+                                scope.cancel()
+                                mutableValue.value = false
+                            })
+                        ) {
+                            block.compose()
+                        }
+                    }
+                }
+            },
+            content = {  }
+        )
     }
 }
 
